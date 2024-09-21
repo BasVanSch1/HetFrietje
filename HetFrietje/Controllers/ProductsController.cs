@@ -1,12 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HetFrietje.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HetFrietje.Controllers
 {
     public class ProductsController : Controller
     {
-        public IActionResult Index()
+        private readonly DatabaseContext dbContext;
+
+        public ProductsController(DatabaseContext _context)
         {
-            return View();
+            dbContext = _context;
+        }
+
+        public async Task<IActionResult> StockManagement()
+        {
+            var products = await dbContext.Products.ToListAsync();
+            return View(products);
         }
     }
 }
