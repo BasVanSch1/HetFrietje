@@ -24,12 +24,6 @@ namespace HetFrietje.Controllers
             return View(dbData);
         }
 
-        public async Task<IActionResult> StockManagement()
-        {
-            var productList = await dbContext.Products.ToListAsync();
-            return View(productList);
-        }
-
         public IActionResult Privacy()
         {
             return View();
