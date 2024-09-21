@@ -13,6 +13,7 @@
 </div>
 <div class="border-1 rounded border p-4 d-flex">
     <form asp-action="Edit" class="d-flex">
+        <!-- Linker kolom -->
         <div class="col-md-6">
             <img src="~/img/products/@(Model.Item1.ProductId + ".png")" class="img-fluid mb-2" />
 
@@ -105,9 +106,10 @@
             </div>
         </div>
         
+        <!-- Lege midden kolom -->
+        <div class="col-md-3"></div> 
 
-        <div class="col-md-3"></div>
-
+        <!-- Rechter kolom -->
         <div class="col-md-11">
             <textarea asp-for="@Model.Item1.Name" class="form-control" id="productName" rows="1" , cols="4">@Model.Item1.Name</textarea>
             <hr/>
