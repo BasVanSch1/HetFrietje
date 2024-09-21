@@ -2,6 +2,7 @@
 using HetFrietje.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace HetFrietje.Controllers
 {
@@ -113,6 +114,47 @@ namespace HetFrietje.Controllers
                 throw;
             }
 
+            return RedirectToAction(nameof(StockManagement));
+        }
+
+        public async Task<IActionResult> Create()
+        {
+            var categories = await dbContext.Categories.ToListAsync();
+            var productOptions = await dbContext.Options.ToListAsync();
+            var newestProduct = await dbContext.Products
+                                            .OrderBy(p => p.ProductId) // sorteer de lijst op ProductId (van laag naar hoog)
+                                            .LastAsync(); // haal het laatste id op
+
+            int _productId = 1;
+
+            if (newestProduct != null)
+            {
+                _productId = newestProduct.ProductId + 1; // Incrementeer het productId met 1 voor een nieuwe productId
+            }
+            var emptyProduct = new Product()
+            {
+                ProductId = _productId
+            };
+
+            Tuple<Product, List<Category>, List<Option>> data = new(emptyProduct, categories, productOptions);
+            return View(data);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([Bind("Name", "Description", "Price", "SalesPrice", "Tax", "Stock", "Options", "Categories", Prefix = "Item1")] Product product)
+        {
+            
+            if (ModelState.IsValid)
+            {
+
+                dbContext.Add(product);
+                await dbContext.SaveChangesAsync();
+                return RedirectToAction(nameof(StockManagement));
+            }
+
+
+            TempData["MessageType"] = "error";
+            TempData["Message"] = "Failed to create product";
             return RedirectToAction(nameof(StockManagement));
         }
     }

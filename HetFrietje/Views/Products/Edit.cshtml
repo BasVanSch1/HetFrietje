@@ -11,16 +11,21 @@
 <div class="text-center fw-bold">
     <h3>Artikel aanpassen</h3>
 </div>
+
+<div class="alert alert-warning">
+    Het aanpassen van Keuze opties, Categorieën en de productfoto werkt momenteel nog niet.
+</div>
+
 <div class="border-1 rounded border p-4 d-flex">
     <form asp-action="Edit" class="d-flex">
         <!-- Linker kolom -->
         <div class="col-md-6">
-            <img src="~/img/products/@(Model.Item1.ProductId + ".png")" class="img-fluid mb-2" />
+            <img src="~/img/products/default.png" onchange="previewProductPhoto(this)" class="img-fluid mb-2" id="productPhoto" />
 
             <div class="row mb-1">
-                <label for="productPhoto" class="col-form-label col-md-4">Afbeelding</label>
+                <label for="productPhotoUpload" class="col-form-label col-md-4">Afbeelding</label>
                 <div class="col-md-8">
-                    <input class="form-control" type="file" id="productPhoto"/>
+                    <input class="form-control" type="file" accept="image/png" id="productPhotoUpload" />
                 </div>
             </div>
 
@@ -111,7 +116,7 @@
 
         <!-- Rechter kolom -->
         <div class="col-md-11">
-            <textarea asp-for="@Model.Item1.Name" class="form-control" id="productName" rows="1" , cols="4">@Model.Item1.Name</textarea>
+            <textarea asp-for="@Model.Item1.Name" class="form-control" id="productName" rows="1" cols="4">@Model.Item1.Name</textarea>
             <hr/>
 
             <textarea asp-for="@Model.Item1.Description" class="form-control" id="productDescription" rows="4" cols="4">@Model.Item1.Description</textarea>

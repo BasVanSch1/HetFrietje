@@ -10,8 +10,8 @@
         public decimal Tax { get; set; }
         public int Stock {  get; set; }
         public List<Option>? Options { get; set; }
-        public List<ProductOrder>? Orders { get; set; }
-        public List<ProductCategory>? Categories { get; set; }
+        public List<Order>? Orders { get; set; }
+        public List<Category>? Categories { get; set; }
 
 
         public int AddProductOption(Option option)

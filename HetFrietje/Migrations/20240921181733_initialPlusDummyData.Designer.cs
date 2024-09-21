@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HetFrietje.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240921102222_initialPlusDummyData")]
+    [Migration("20240921181733_initialPlusDummyData")]
     partial class initialPlusDummyData
     {
         /// <inheritdoc />
@@ -24,6 +24,48 @@ namespace HetFrietje.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("CategoryProduct", b =>
+                {
+                    b.Property<int>("CategoriesCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoriesCategoryId", "ProductsProductId");
+
+                    b.HasIndex("ProductsProductId");
+
+                    b.ToTable("CategoryProduct");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoriesCategoryId = 1,
+                            ProductsProductId = 1
+                        },
+                        new
+                        {
+                            CategoriesCategoryId = 7,
+                            ProductsProductId = 1
+                        },
+                        new
+                        {
+                            CategoriesCategoryId = 4,
+                            ProductsProductId = 2
+                        },
+                        new
+                        {
+                            CategoriesCategoryId = 1,
+                            ProductsProductId = 3
+                        },
+                        new
+                        {
+                            CategoriesCategoryId = 7,
+                            ProductsProductId = 3
+                        });
+                });
 
             modelBuilder.Entity("HetFrietje.Models.Category", b =>
                 {
@@ -127,6 +169,9 @@ namespace HetFrietje.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -142,9 +187,21 @@ namespace HetFrietje.Migrations
 
                     b.HasKey("OrderId");
 
+                    b.HasIndex("ProductId");
+
                     b.HasIndex("Username");
 
                     b.ToTable("Orders");
+
+                    b.HasData(
+                        new
+                        {
+                            OrderId = 1,
+                            Status = 1,
+                            SubtotalPrice = 123m,
+                            TotalPrice = 123m,
+                            Username = "Klant"
+                        });
                 });
 
             modelBuilder.Entity("HetFrietje.Models.Product", b =>
@@ -209,48 +266,6 @@ namespace HetFrietje.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HetFrietje.Models.ProductCategory", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductId", "CategoryId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("ProductCategory");
-
-                    b.HasData(
-                        new
-                        {
-                            ProductId = 1,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ProductId = 1,
-                            CategoryId = 7
-                        },
-                        new
-                        {
-                            ProductId = 2,
-                            CategoryId = 4
-                        },
-                        new
-                        {
-                            ProductId = 3,
-                            CategoryId = 1
-                        },
-                        new
-                        {
-                            ProductId = 3,
-                            CategoryId = 7
-                        });
-                });
-
             modelBuilder.Entity("HetFrietje.Models.ProductOrder", b =>
                 {
                     b.Property<int>("OrderId")
@@ -259,11 +274,28 @@ namespace HetFrietje.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderId", "ProductId");
+                    b.Property<int>("ProductCount")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderId", "ProductId", "ProductCount");
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductOrder");
+                    b.ToTable("ProductOrders");
+
+                    b.HasData(
+                        new
+                        {
+                            OrderId = 1,
+                            ProductId = 1,
+                            ProductCount = 2
+                        },
+                        new
+                        {
+                            OrderId = 1,
+                            ProductId = 2,
+                            ProductCount = 1
+                        });
                 });
 
             modelBuilder.Entity("HetFrietje.Models.User", b =>
@@ -284,6 +316,14 @@ namespace HetFrietje.Migrations
                     b.HasKey("Username");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Username = "Klant",
+                            Name = "Klant 1",
+                            PermissionLevel = 1
+                        });
                 });
 
             modelBuilder.Entity("OptionProduct", b =>
@@ -299,37 +339,29 @@ namespace HetFrietje.Migrations
                     b.HasIndex("ProductsProductId");
 
                     b.ToTable("OptionProduct");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            OptionsOptionId = 1,
-                            ProductsProductId = 1
-                        },
-                        new
-                        {
-                            OptionsOptionId = 2,
-                            ProductsProductId = 1
-                        },
-                        new
-                        {
-                            OptionsOptionId = 1,
-                            ProductsProductId = 2
-                        },
-                        new
-                        {
-                            OptionsOptionId = 1,
-                            ProductsProductId = 3
-                        },
-                        new
-                        {
-                            OptionsOptionId = 2,
-                            ProductsProductId = 3
-                        });
+            modelBuilder.Entity("CategoryProduct", b =>
+                {
+                    b.HasOne("HetFrietje.Models.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HetFrietje.Models.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("HetFrietje.Models.Order", b =>
                 {
+                    b.HasOne("HetFrietje.Models.Product", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("ProductId");
+
                     b.HasOne("HetFrietje.Models.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("Username")
@@ -337,25 +369,6 @@ namespace HetFrietje.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("HetFrietje.Models.ProductCategory", b =>
-                {
-                    b.HasOne("HetFrietje.Models.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HetFrietje.Models.Product", "Product")
-                        .WithMany("Categories")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("HetFrietje.Models.ProductOrder", b =>
@@ -367,7 +380,7 @@ namespace HetFrietje.Migrations
                         .IsRequired();
 
                     b.HasOne("HetFrietje.Models.Product", "Product")
-                        .WithMany("Orders")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -399,8 +412,6 @@ namespace HetFrietje.Migrations
 
             modelBuilder.Entity("HetFrietje.Models.Product", b =>
                 {
-                    b.Navigation("Categories");
-
                     b.Navigation("Orders");
                 });
 

@@ -72,6 +72,30 @@ namespace HetFrietje.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CategoryProduct",
+                columns: table => new
+                {
+                    CategoriesCategoryId = table.Column<int>(type: "int", nullable: false),
+                    ProductsProductId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryProduct", x => new { x.CategoriesCategoryId, x.ProductsProductId });
+                    table.ForeignKey(
+                        name: "FK_CategoryProduct_Categories_CategoriesCategoryId",
+                        column: x => x.CategoriesCategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "CategoryId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CategoryProduct_Products_ProductsProductId",
+                        column: x => x.ProductsProductId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OptionProduct",
                 columns: table => new
                 {
@@ -96,30 +120,6 @@ namespace HetFrietje.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductCategory",
-                columns: table => new
-                {
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductCategory", x => new { x.ProductId, x.CategoryId });
-                    table.ForeignKey(
-                        name: "FK_ProductCategory_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "CategoryId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ProductCategory_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
                 {
@@ -128,11 +128,17 @@ namespace HetFrietje.Migrations
                     Username = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    SubtotalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
+                    SubtotalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.OrderId);
+                    table.ForeignKey(
+                        name: "FK_Orders_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId");
                     table.ForeignKey(
                         name: "FK_Orders_Users_Username",
                         column: x => x.Username,
@@ -142,23 +148,24 @@ namespace HetFrietje.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductOrder",
+                name: "ProductOrders",
                 columns: table => new
                 {
                     OrderId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false)
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ProductCount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductOrder", x => new { x.OrderId, x.ProductId });
+                    table.PrimaryKey("PK_ProductOrders", x => new { x.OrderId, x.ProductId, x.ProductCount });
                     table.ForeignKey(
-                        name: "FK_ProductOrder_Orders_OrderId",
+                        name: "FK_ProductOrders_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "OrderId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProductOrder_Products_ProductId",
+                        name: "FK_ProductOrders_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "ProductId",
@@ -200,28 +207,40 @@ namespace HetFrietje.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "OptionProduct",
-                columns: new[] { "OptionsOptionId", "ProductsProductId" },
+                table: "Users",
+                columns: new[] { "Username", "Name", "PermissionLevel", "password" },
+                values: new object[] { "Klant", "Klant 1", 1, null });
+
+            migrationBuilder.InsertData(
+                table: "CategoryProduct",
+                columns: new[] { "CategoriesCategoryId", "ProductsProductId" },
                 values: new object[,]
                 {
                     { 1, 1 },
-                    { 1, 2 },
                     { 1, 3 },
-                    { 2, 1 },
-                    { 2, 3 }
+                    { 4, 2 },
+                    { 7, 1 },
+                    { 7, 3 }
                 });
 
             migrationBuilder.InsertData(
-                table: "ProductCategory",
-                columns: new[] { "CategoryId", "ProductId" },
+                table: "Orders",
+                columns: new[] { "OrderId", "ProductId", "Status", "SubtotalPrice", "TotalPrice", "Username" },
+                values: new object[] { 1, null, 1, 123m, 123m, "Klant" });
+
+            migrationBuilder.InsertData(
+                table: "ProductOrders",
+                columns: new[] { "OrderId", "ProductCount", "ProductId" },
                 values: new object[,]
                 {
-                    { 1, 1 },
-                    { 7, 1 },
-                    { 4, 2 },
-                    { 1, 3 },
-                    { 7, 3 }
+                    { 1, 2, 1 },
+                    { 1, 1, 2 }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoryProduct_ProductsProductId",
+                table: "CategoryProduct",
+                column: "ProductsProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OptionProduct_ProductsProductId",
@@ -229,18 +248,18 @@ namespace HetFrietje.Migrations
                 column: "ProductsProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_ProductId",
+                table: "Orders",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_Username",
                 table: "Orders",
                 column: "Username");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductCategory_CategoryId",
-                table: "ProductCategory",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ProductOrder_ProductId",
-                table: "ProductOrder",
+                name: "IX_ProductOrders_ProductId",
+                table: "ProductOrders",
                 column: "ProductId");
         }
 
@@ -248,19 +267,19 @@ namespace HetFrietje.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "CategoryProduct");
+
+            migrationBuilder.DropTable(
                 name: "OptionProduct");
 
             migrationBuilder.DropTable(
-                name: "ProductCategory");
-
-            migrationBuilder.DropTable(
-                name: "ProductOrder");
-
-            migrationBuilder.DropTable(
-                name: "Options");
+                name: "ProductOrders");
 
             migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Options");
 
             migrationBuilder.DropTable(
                 name: "Orders");

@@ -17,11 +17,11 @@ namespace HetFrietje.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var productCategories = await dbContext.ProductCategory.Include(p => p.Category).Include(p => p.Product).ToListAsync();
             var categories = await dbContext.Categories.ToListAsync();
-            Tuple<List<ProductCategory>, List<Category>> dbData = new(productCategories, categories);
+            var products = await dbContext.Products.ToListAsync();
+            Tuple<List<Category>, List<Product>> data = new(categories, products);
 
-            return View(dbData);
+            return View(data);
         }
 
         public IActionResult Privacy()

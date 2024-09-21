@@ -1,4 +1,4 @@
-﻿@model Tuple<List<ProductCategory>, List<Category>>
+﻿@model Tuple<List<Category>, List<Product>>
 
 @{
     ViewData["Title"] = "Home Page";
@@ -12,7 +12,7 @@
     <div class="align-self-start">
         <p class="text-black fw-bold text-decoration-underline m-0">Categorieën</p>
         <ul class="p-0 m-0">
-            @foreach (Category cat in Model.Item2)
+            @foreach (Category cat in Model.Item1)
             {
                 <li>
                     @cat.Name
@@ -26,10 +26,10 @@
         </div>
         <div id="product-selection">
             <ul>
-                @foreach (var productcat in Model.Item1)
+                @foreach (var product in Model.Item2)
                 {
                     <li>
-                        @productcat.Product.Name
+                        @product.Name
                     </li>
                 }
             </ul>
