@@ -1,8 +1,38 @@
-﻿@{
+﻿@model Tuple<List<ProductCategory>, List<Category>>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="col-md-14 px-0 coverpage ccenter">
+    <img class="img-fluid" src="img/frontpage.png" />
+</div>
+<h1>Deze pagina is nog niet af, de 'Artikelbeheer' pagina is uitgewerkt voor inleveropdracht 1</h1>
+<div class="col-md-2 d-flex">
+    <div class="align-self-start">
+        <p class="text-black fw-bold text-decoration-underline m-0">Categorieën</p>
+        <ul class="p-0 m-0">
+            @foreach (Category cat in Model.Item2)
+            {
+                <li>
+                    @cat.Name
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="col-md-12">
+        <div id="shoppingcart">
+
+        </div>
+        <div id="product-selection">
+            <ul>
+                @foreach (var productcat in Model.Item1)
+                {
+                    <li>
+                        @productcat.Product.Name
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
 </div>

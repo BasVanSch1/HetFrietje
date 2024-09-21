@@ -1,3 +1,5 @@
+using HetFrietje.Data;
+
 namespace HetFrietje
 {
     public class Program
@@ -8,6 +10,7 @@ namespace HetFrietje
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddDbContext<DatabaseContext>();
 
             var app = builder.Build();
 

@@ -1,10 +1,10 @@
 ﻿namespace HetFrietje.Models
 {
-    public class ProductOption
+    public class ProductOrder
     {
+        public int OrderId { get; set; }
+        public Order Order { get; set; }
         public int ProductId { get; set; }
         public Product Product { get; set; }
-        public int OptionId { get; set; }
-        public Option Option { get; set; }
     }
 }

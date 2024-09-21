@@ -20,3 +20,26 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.coverpage {
+    height: 30vh;
+    width: 100%;
+}
+
+.coverpage img {
+    height: inherit;
+    width: inherit;
+}
+
+.deleteProductBtn {
+    text-align: center;
+}
+
+.deleteProductBtn a {
+    color: #ff0000;
+    text-decoration: none;
+}
+
+.btn-custom-editproduct {
+    border-color: #d5d5d5;
+}

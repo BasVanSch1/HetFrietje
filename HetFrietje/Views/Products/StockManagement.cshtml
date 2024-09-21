@@ -1,0 +1,101 @@
+﻿@model List<Product>
+
+@{
+    ViewData["Title"] = "Artikel beheer";
+    var messageType = TempData["MessageType"] as string;
+    var message = TempData["Message"] as string;
+    var productId = TempData["ProductId"] as int?;
+}
+
+<div class="text-center fw-bold">
+    <h3>Artikelen</h3>
+</div>
+<div class="border-1 rounded border">
+    <table class="table">
+        <tr>
+            <th></th>
+            <th>Artikel Nummer</th>
+            <th>Artikel Naam</th>
+            <th>Voorraad</th>
+            <th>Beschrijving</th>
+            <th></th>
+        </tr>
+        
+        @foreach (Product product in Model)
+        {
+            <tr>
+                <td class="deleteProductBtn">
+                    <a asp-area="" asp-controller="Products" asp-action="DeleteProduct" asp-route-id="@product.ProductId">x</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => product.ProductId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => product.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => product.Stock)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => product.Description)
+                </td>
+                <td class="EditProductBtn">
+                    <a class="btn btn-light btn-custom-editproduct" asp-area="" asp-controller="Products" asp-action="Edit" asp-route-id="@product.ProductId">Wijzig</a>
+                </td>
+            </tr>
+        }
+    </table>
+    <div class="d-flex flex-row-reverse m-2 rounded-5">
+        <a class="btn btn-warning align-self-end" asp-area="" asp-controller="Products" asp-action="Create">Nieuw</a>
+    </div>
+</div>
+
+@if (!String.IsNullOrEmpty(messageType) && !String.IsNullOrEmpty(message))
+{
+    // Wil niet een apart .js bestand aanmaken voor één klein scriptje vandaar dat dit script voorwaardelijk aan de pagina wordt toegevoegd.
+    // Dit zorgt ervoor dat de bootstrap modal standaard wordt getoont indien er een message beschikbaar is.
+    @section scripts {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#messageModal').modal('show');
+            });
+        </script>
+    }
+
+    <div class="modal" tabindex="-1" id="messageModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    @switch (messageType)
+                    {
+                        case "error":
+                            <h5 class="modal-title">ERROR</h5>
+                            break;
+                        case "confirmation":
+                            <h5 class="modal-title">Artikel Verwijderen</h5>
+                            break;
+                        case "success":
+                            <h5 class="modal-title">Gelukt</h5>
+                            break;
+                        default:
+                            <h5 class="modal-title">Default Title</h5>
+                            break;
+                    }
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>@message</p>
+                </div>
+                <div class="modal-footer">
+                    @if (messageType.Equals("confirmation") && productId != null)
+                    {
+                        <a class="btn btn-warning" asp-area="" asp-controller="Products" asp-action="DeleteProductConfirmed" asp-route-id="@productId">Bevestig</a>
+                    }
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

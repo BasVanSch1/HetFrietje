@@ -2,9 +2,10 @@
 {
     public class Option
     {
-        public int ProductOptionId { get; set; }
+        public int OptionId { get; set; }
         public string Name { get; set; }
         public List<string> Values { get; set; }
+        public List<Product>? Products { get; set; } // Dit is nodig voor de many-to-many relatie.
 
         public int AddValue(string value)
         {

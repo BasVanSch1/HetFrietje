@@ -1,21 +1,33 @@
+using HetFrietje.Data;
 using HetFrietje.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace HetFrietje.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly DatabaseContext dbContext;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(DatabaseContext _context)
         {
-            _logger = logger;
+            dbContext = _context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var productCategories = await dbContext.ProductCategory.Include(p => p.Category).Include(p => p.Product).ToListAsync();
+            var categories = await dbContext.Categories.ToListAsync();
+            Tuple<List<ProductCategory>, List<Category>> dbData = new(productCategories, categories);
+
+            return View(dbData);
+        }
+
+        public async Task<IActionResult> StockManagement()
+        {
+            var productList = await dbContext.Products.ToListAsync();
+            return View(productList);
         }
 
         public IActionResult Privacy()
