@@ -336,6 +336,33 @@ namespace HetFrietje.Migrations
                     b.HasIndex("ProductsProductId");
 
                     b.ToTable("OptionProduct");
+
+                    b.HasData(
+                        new
+                        {
+                            OptionsOptionId = 1,
+                            ProductsProductId = 1
+                        },
+                        new
+                        {
+                            OptionsOptionId = 2,
+                            ProductsProductId = 1
+                        },
+                        new
+                        {
+                            OptionsOptionId = 1,
+                            ProductsProductId = 2
+                        },
+                        new
+                        {
+                            OptionsOptionId = 2,
+                            ProductsProductId = 2
+                        },
+                        new
+                        {
+                            OptionsOptionId = 1,
+                            ProductsProductId = 3
+                        });
                 });
 
             modelBuilder.Entity("CategoryProduct", b =>

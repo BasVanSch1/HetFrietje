@@ -47,7 +47,14 @@
                         {
                             foreach(var category in Model.Item2)
                             {
-                                <option value="@category.CategoryId">@category.Name</option>
+                                if (Model.Item1.Categories != null && Model.Item1.Categories.Contains(category))
+                                {
+                                    <option value="@category" selected>@category.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@category">@category.Name</option>
+                                }
                             }
                         }
                     </select>
@@ -65,9 +72,15 @@
                         {
                             foreach (var option in Model.Item3)
                             {
-                                <option value="@option">@option.Name</option>
+                                if (Model.Item1.Options != null && Model.Item1.Options.Contains(option))
+                                {
+                                    <option value="@option" selected>@option.Name</option>
+                                } else
+                                {
+                                    <option value="@option">@option.Name</option>
+                                }
+                                
                             }
-                            <option value="null">Geen</option>
                         }
                     </select>
                 </div>

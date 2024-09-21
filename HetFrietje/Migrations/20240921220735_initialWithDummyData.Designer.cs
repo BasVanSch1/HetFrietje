@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HetFrietje.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240921181733_initialPlusDummyData")]
-    partial class initialPlusDummyData
+    [Migration("20240921220735_initialWithDummyData")]
+    partial class initialWithDummyData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -339,6 +339,33 @@ namespace HetFrietje.Migrations
                     b.HasIndex("ProductsProductId");
 
                     b.ToTable("OptionProduct");
+
+                    b.HasData(
+                        new
+                        {
+                            OptionsOptionId = 1,
+                            ProductsProductId = 1
+                        },
+                        new
+                        {
+                            OptionsOptionId = 2,
+                            ProductsProductId = 1
+                        },
+                        new
+                        {
+                            OptionsOptionId = 1,
+                            ProductsProductId = 2
+                        },
+                        new
+                        {
+                            OptionsOptionId = 2,
+                            ProductsProductId = 2
+                        },
+                        new
+                        {
+                            OptionsOptionId = 1,
+                            ProductsProductId = 3
+                        });
                 });
 
             modelBuilder.Entity("CategoryProduct", b =>

@@ -7,7 +7,7 @@
 namespace HetFrietje.Migrations
 {
     /// <inheritdoc />
-    public partial class initialPlusDummyData : Migration
+    public partial class initialWithDummyData : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -221,6 +221,18 @@ namespace HetFrietje.Migrations
                     { 4, 2 },
                     { 7, 1 },
                     { 7, 3 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "OptionProduct",
+                columns: new[] { "OptionsOptionId", "ProductsProductId" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 1, 2 },
+                    { 1, 3 },
+                    { 2, 1 },
+                    { 2, 2 }
                 });
 
             migrationBuilder.InsertData(

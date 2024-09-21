@@ -44,7 +44,20 @@ namespace HetFrietje.Data
                 .HasColumnType("decimal(5,2)"); // 5 cijfers waarvan 2 achter de komma
 
             modelBuilder.Entity<ProductOrder>()
-                .HasKey(po => new { po.OrderId, po.ProductId, po.ProductCount });
+                .HasKey(po => new { po.OrderId, po.ProductId, po.ProductCount }); // koppeltabel tussen product en order met een productaantal erbij
+
+            modelBuilder.Entity<Product>()
+                .HasMany<Option>(p => p.Options)
+                .WithMany(o => o.Products)
+                .UsingEntity(join =>
+                    join.HasData(new[] {
+                            new { ProductsProductId = 1, OptionsOptionId = 1},
+                            new { ProductsProductId = 1, OptionsOptionId = 2},
+                            new { ProductsProductId = 2, OptionsOptionId = 1},
+                            new { ProductsProductId = 2, OptionsOptionId = 2},
+                            new { ProductsProductId = 3, OptionsOptionId = 1}
+                        })
+                    );
 
             modelBuilder.Entity<Product>()
                 .HasMany<Category>(p => p.Categories)
@@ -59,6 +72,8 @@ namespace HetFrietje.Data
                     })
                 );
 
+            
+
             modelBuilder.Entity<Order>()
                 .Property(o => o.TotalPrice)
                 .HasColumnType("decimal(10,2)");
@@ -66,7 +81,6 @@ namespace HetFrietje.Data
             modelBuilder.Entity<Order>()
                 .Property(o => o.SubtotalPrice)
                 .HasColumnType("decimal(10,2)");
-
 
             // Dummy data
             // producten aanmaken
