@@ -15,21 +15,6 @@
             return -1;
         }
 
-        public int SetStatus(OrderStatus status)
-        {
-            return -1;
-        }
-
-        public int AddProduct(Product product)
-        {
-            return -1;
-        }
-
-        public int RemoveProduct(Product product)
-        {
-            return -1;
-        }
-
         private decimal CalculateTotal()
         {
             return 0M;
