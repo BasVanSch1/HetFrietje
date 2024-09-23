@@ -17,26 +17,28 @@
 </div>
 
 <div class="border-1 rounded border p-4 d-flex">
-    <form asp-action="Edit" class="d-flex">
+    <form asp-action="Edit" class="d-flex col-md-12">
         <!-- Linker kolom -->
-        <div class="col-md-6">
-            <img src="~/img/products/default.png" onchange="previewProductPhoto(this)" class="img-fluid mb-2" id="productPhoto" />
+        <div class="col-md-4">
+            <div class="row col-md-12 mb-2">
+                <img src="~/img/products/default.png" onchange="previewProductPhoto(this)" class="img-fluid" id="productPhoto" />
+            </div>
 
-            <div class="row mb-1">
+            <div class="row col-md-12 mb-1">
                 <label for="productPhotoUpload" class="col-form-label col-md-4">Afbeelding</label>
                 <div class="col-md-8">
                     <input class="form-control" type="file" accept="image/png" id="productPhotoUpload" />
                 </div>
             </div>
 
-            <div class="row mb-1">
+            <div class="row col-md-12 mb-1">
                 <label asp-for="@Model.Item1.Stock" class="col-form-label col-md-4">Voorraad</label>
                 <div class="col-md-8">
                     <input asp-for="@Model.Item1.Stock" class="form-control form-control-sm" type="number" value="@Model.Item1.Stock" />
                 </div>
             </div>
 
-            <div class="row mb-1">
+            <div class="row col-md-12 mb-1">
                 <label asp-for="@Model.Item1.Categories" class="col-form-label col-md-4">Categorieën</label>
                 <div class="col-md-8">
                     <select asp-for="@Model.Item1.Categories" class="form-select" id="productCategories" multiple>
@@ -61,7 +63,7 @@
                 </div>
             </div>
 
-            <div class="row mb-1">
+            <div class="row col-md-12 mb-1">
                 <label asp-for="@Model.Item1.Options" class="col-form-label col-md-4">Keuze opties</label>
                 <div class="col-md-8">
                     <select asp-for="@Model.Item1.Options" class="form-select" id="productOptions" multiple>
@@ -86,28 +88,28 @@
                 </div>
             </div>
 
-            <div class="row mb-1">
+            <div class="row col-md-12 mb-1">
                 <label asp-for="@Model.Item1.Price" class="col-form-label col-md-4">Prijs</label>
                 <div class="col-md-8">
                     <input asp-for="@Model.Item1.Price" class="form-control form-control-sm" type="number" step="0.01" id="productPrice" value="@Model.Item1.Price" />
                 </div>
             </div>
 
-            <div class="row mb-1">
+            <div class="row col-md-12 mb-1">
                 <label asp-for="@Model.Item1.SalesPrice" class="col-form-label col-md-4">Kortingsprijs</label>
                 <div class="col-md-8">
                     <input asp-for="@Model.Item1.SalesPrice" class="form-control form-control-sm" type="number" step="0.01" id="productSalesPrice" value="@Model.Item1.SalesPrice" />
                 </div>
             </div>
 
-            <div class="row mb-1">
+            <div class="row col-md-12 mb-1">
                 <label asp-for="@Model.Item1.Tax" class="col-form-label col-md-4">BTW</label>
                 <div class="col-md-8">
                     <input asp-for="@Model.Item1.Tax" class="form-control form-control-sm" type="number" step="0.01" id="productTax" value="@Model.Item1.Tax" />
                 </div>
             </div>
 
-            <div class="row mb-1">
+            <div class="row col-md-12 mb-1">
                 <label asp-for="@Model.Item1.ProductId" class="col-form-label col-md-4">Artikelnummer</label>
                 <div class="col-md-8">
                     <input asp-for="@Model.Item1.ProductId" class="form-control form-control-sm" type="number" id="productId" value="@Model.Item1.ProductId" readonly />
@@ -125,10 +127,10 @@
         </div>
         
         <!-- Lege midden kolom -->
-        <div class="col-md-3"></div> 
+        <div class="col-md-1"></div> 
 
         <!-- Rechter kolom -->
-        <div class="col-md-11">
+        <div class="col-md-7">
             <textarea asp-for="@Model.Item1.Name" class="form-control" id="productName" rows="1" cols="4">@Model.Item1.Name</textarea>
             <hr/>
 
