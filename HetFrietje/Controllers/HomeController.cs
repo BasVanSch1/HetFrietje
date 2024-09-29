@@ -18,7 +18,9 @@ namespace HetFrietje.Controllers
         public async Task<IActionResult> Index()
         {
             var categories = await dbContext.Categories.ToListAsync();
-            var products = await dbContext.Products.ToListAsync();
+            var products = await dbContext.Products
+                                .Include(p => p.Categories)    
+                                .ToListAsync();
 
             var viewModel = new ProductListViewModel
             {

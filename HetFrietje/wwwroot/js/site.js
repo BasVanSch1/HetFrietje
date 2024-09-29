@@ -21,3 +21,12 @@ $(function () {
         previewProductPhoto(input);
     });
 });
+
+function showProductsByCategory(id) {
+    if (id == -1) {
+        $('.productContainer').removeClass('d-none');
+    } else {
+        $('.productContainer').addClass('d-none');
+        $('.categoryId-' + id).removeClass('d-none');
+    }
+}

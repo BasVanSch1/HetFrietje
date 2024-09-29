@@ -11,12 +11,15 @@
     <div class="col-md-1 align-self-start">
         <p class="text-black fw-bold text-decoration-underline m-0">Categorieën</p>
         <ul class="p-0 m-0">
+            <li>
+                <a href="#" onclick="showProductsByCategory(-1)">Alles</a>
+            </li>
             @if (Model.Categories != null)
             {
                 @foreach (var category in Model.Categories)
                 {
                     <li>
-                        <a href="#">@category.Name</a>
+                        <a href="#" onclick="showProductsByCategory(@category.CategoryId)">@category.Name</a>
                     </li>
                 }
             }
@@ -30,7 +33,16 @@
             {
                 @foreach (var product in Model.Products)
                 {
-                    <div class="productContainer d-flex flex-column border border-dark border-2 rounded m-3">
+                    string categories = $"";
+                    @if (product.Categories != null)
+                    {
+                        @foreach (var category in product.Categories)
+                        {
+                            categories += $"categoryId-{category.CategoryId} ";
+                        }
+                    }
+
+                    <div class="productContainer d-flex flex-column border border-dark border-2 rounded m-3 @categories">
                         <img class="productImage" src="~/img/products/@(product.ProductId).png" onerror="this.src='/img/products/default.png';this.onerror=null" />
 
                         <div class="d-flex flex-column p-1 h-100">
