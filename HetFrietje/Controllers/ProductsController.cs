@@ -157,6 +157,16 @@ namespace HetFrietje.Controllers
                         existingProduct.Categories.Add(category); // add to the existingProduct's Category list in the dbContext so that the State changes to Modified.
                     }
                 }
+
+                if (model.Product.SalesPrice != null) // Add the 'Aanbiedingen' category when a SalesPrice is set.
+                {
+                    var category = dbContext.Categories.FirstOrDefault(c => c.Name.Equals("Aanbiedingen"));
+
+                    if (category != null)
+                    {
+                        existingProduct.Categories.Add(category);
+                    }
+                }
             }
 
             if (model.SelectedOptionsIds != null) // same as above but then for Options.
