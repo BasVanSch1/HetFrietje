@@ -55,7 +55,8 @@ namespace HetFrietje.Data
                             new { ProductsProductId = 1, OptionsOptionId = 2},
                             new { ProductsProductId = 2, OptionsOptionId = 1},
                             new { ProductsProductId = 2, OptionsOptionId = 2},
-                            new { ProductsProductId = 3, OptionsOptionId = 1}
+                            new { ProductsProductId = 3, OptionsOptionId = 1},
+                            new { ProductsProductId = 4, OptionsOptionId = 1}
                         })
                     );
 
@@ -64,11 +65,14 @@ namespace HetFrietje.Data
                 .WithMany(c => c.Products)
                 .UsingEntity(join =>
                     join.HasData(new[] {
-                        new { ProductsProductId = 1, CategoriesCategoryId = 1},
-                        new { ProductsProductId = 1, CategoriesCategoryId = 7},
-                        new { ProductsProductId = 2, CategoriesCategoryId = 4 },
-                        new { ProductsProductId = 3, CategoriesCategoryId = 1},
+                        new { ProductsProductId = 1, CategoriesCategoryId = 2},
+                        new { ProductsProductId = 2, CategoriesCategoryId = 1},
+                        new { ProductsProductId = 2, CategoriesCategoryId = 2},
+                        new { ProductsProductId = 3, CategoriesCategoryId = 3},
                         new { ProductsProductId = 3, CategoriesCategoryId = 7},
+                        new { ProductsProductId = 4, CategoriesCategoryId = 2},
+                        new { ProductsProductId = 4, CategoriesCategoryId = 7},
+                        new { ProductsProductId = 4, CategoriesCategoryId = 8}
                     })
                 );
 
@@ -87,18 +91,18 @@ namespace HetFrietje.Data
             Product product1 = new Product()
             {
                 ProductId = 1,
-                Name = "Product 1",
-                Description = "Voorbeeld product 1",
+                Name = "Cheeseburger",
+                Description = "Klasieke cheeseburger zoals iedereen hem kent.",
                 Price = 1.50m,
                 Tax = 9.00m,
-                Stock = 152
+                Stock = 32
             };
 
             Product product2 = new Product()
             {
                 ProductId = 2,
-                Name = "Product 2",
-                Description = "Voorbeeld product 2",
+                Name = "Spekburger schotel",
+                Description = "De burger.. met spek. maar dan in schotel variant?",
                 Price = 7.45m,
                 Tax = 9.00m,
                 Stock = 76
@@ -107,19 +111,34 @@ namespace HetFrietje.Data
             Product product3 = new Product()
             {
                 ProductId = 3,
-                Name = "Product 3",
-                Description = "Voorbeeld product 3",
+                Name = "Friet",
+                Description = "Onze beste friet, gemaakt van 5% aardappelen en 95% zout.",
                 Price = 54.65m,
+                SalesPrice = 12m,
                 Tax = 9.00m,
                 Stock = 26
             };
 
+            Product product4 = new Product()
+            {
+                ProductId = 4,
+                Name = "Superburger",
+                Description = "De geweldige super burger, met 0 % natuurlijk vlees.",
+                Price = 12.65m,
+                SalesPrice = 12m,
+                Tax = 9.00m,
+                Stock = 18
+            };
+
+            
             modelBuilder.Entity<Product>()
                 .HasData(product1);
             modelBuilder.Entity<Product>()
                 .HasData(product2);
             modelBuilder.Entity<Product>()
                 .HasData(product3);
+            modelBuilder.Entity<Product>()
+                .HasData(product4);
 
             // opties aanmaken
             Option option1 = new Option()
