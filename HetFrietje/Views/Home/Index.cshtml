@@ -1,38 +1,69 @@
-﻿@model Tuple<List<Category>, List<Product>>
+﻿@model ProductListViewModel
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Bestellen";
 }
 
-<div class="col-md-14 px-0 coverpage ccenter">
+<div class="col-md-12 px-0 coverpage center">
     <img class="img-fluid" src="img/frontpage.png" />
 </div>
-<h1>Deze pagina is nog niet af, de 'Artikelbeheer' pagina is uitgewerkt voor inleveropdracht 1</h1>
-<div class="col-md-2 d-flex">
-    <div class="align-self-start">
+<div class="col-md-12 d-flex">
+    <div class="col-md-1 align-self-start">
         <p class="text-black fw-bold text-decoration-underline m-0">Categorieën</p>
         <ul class="p-0 m-0">
-            @foreach (Category cat in Model.Item1)
+            @if (Model.Categories != null)
             {
-                <li>
-                    <a href="#">@cat.Name</a>
-                </li>
-            }
-        </ul>
-    </div>
-    <div class="col-md-12">
-        <div id="shoppingcart">
-
-        </div>
-        <div id="product-selection">
-            <ul>
-                @foreach (var product in Model.Item2)
+                @foreach (var category in Model.Categories)
                 {
                     <li>
-                        @product.Name
+                        <a href="#">@category.Name</a>
                     </li>
                 }
-            </ul>
+            }
+            
+        </ul>
+    </div>
+    <div class="col-md-11 d-flex">
+        <div id="shoppingcart"></div>
+        <div id="product-selection" class="col-md-12 d-flex flex-row justify-content-evenly flex-wrap">
+            @if (Model.Products != null)
+            {
+                @foreach (var product in Model.Products)
+                {
+                    <div class="productContainer d-flex flex-column border border-dark border-2 rounded m-3">
+                        <img class="productImage" src="~/img/products/@(product.ProductId).png" onerror="this.src='/img/products/default.png';this.onerror=null" />
+
+                        <div class="d-flex flex-column p-1 h-100">
+                            <!-- naam en prijs div -->
+                            <div class="d-flex">
+
+                                <!-- linker kolom -->
+                                <div class="col-md-8">
+                                    <p>@product.Name</p>
+                                </div>
+
+                                <!-- rechter kolom -->
+                                <div class="col-md-4">
+                                    @if (product.SalesPrice == null)
+                                    {
+                                        <p>€@product.Price</p>
+                                    } else
+                                    {
+                                        <p class="salesNormalPrice p-0 m-0">€@product.Price</p>
+                                        <p class="salesPrice p-0 mt-0">€@product.SalesPrice</p>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Button -->
+                            <div class="d-flex justify-content-center mb-0 mt-auto">
+                                <a class="btn btn-warning rounded-3" asp-controller="Orders" asp-action="CustomizeProduct">Toevoegen</a>
+                            </div>
+                            
+                        </div>
+                    </div>
+                }
+            }
         </div>
     </div>
 </div>

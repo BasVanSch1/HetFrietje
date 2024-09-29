@@ -43,3 +43,12 @@ body {
 .btn-custom-editproduct {
     border-color: #d5d5d5;
 }
+
+.productImage {
+    max-height: 8rem;
+}
+
+.salesNormalPrice {
+    color: #ff0000;
+    text-decoration: line-through;
+}

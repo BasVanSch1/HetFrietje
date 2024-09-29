@@ -19,14 +19,14 @@ namespace HetFrietje.Controllers
         {
             var categories = await dbContext.Categories.ToListAsync();
             var products = await dbContext.Products.ToListAsync();
-            Tuple<List<Category>, List<Product>> data = new(categories, products);
 
-            return View(data);
-        }
+            var viewModel = new ProductListViewModel
+            {
+                Products = products,
+                Categories = categories
+            };
 
-        public IActionResult Privacy()
-        {
-            return View();
+            return View(viewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
