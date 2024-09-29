@@ -36,25 +36,23 @@
                 </div>
             </div>
 
-            <div class="row mb-1">
-                <!-- Deze form moet op een andere manier worden gemaakt, zodat deze goed wordt meegegeven aan Controller met het opslaan. -->
-                <label asp-for="@Model.Product.Categories" class="col-form-label col-md-4">Categorieën</label>
+            <div class="row col-md-12 mb-1">
+                <label class="col-form-label col-md-4">Categorieën</label>
                 <div class="col-md-8">
                     @Html.ListBoxFor(m => m.SelectedCategoryIds,
                         new MultiSelectList(Model.Categories, "CategoryId", "Name", Model.SelectedCategoryIds),
                         new { @class = "form-control" }
-                    );
+                        )
                 </div>
             </div>
 
-            <div class="row mb-1">
-                <!-- Deze form moet op een andere manier worden gemaakt, zodat deze goed wordt meegegeven aan Controller met het opslaan. -->
-                <label asp-for="@Model.Product.Options" class="col-form-label col-md-4">Keuze opties</label>
+            <div class="row col-md-12 mb-1">
+                <label class="col-form-label col-md-4">Keuze opties</label>
                 <div class="col-md-8">
                     @Html.ListBoxFor(m => m.SelectedOptionsIds,
                         new MultiSelectList(Model.Options, "OptionId", "Name", Model.SelectedOptionsIds),
                         new { @class = "form-control" }
-                    );
+                        )
                 </div>
             </div>
 

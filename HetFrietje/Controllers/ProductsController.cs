@@ -90,14 +90,27 @@ namespace HetFrietje.Controllers
 
             var categories = await dbContext.Categories.ToListAsync();
             var productOptions = await dbContext.Options.ToListAsync();
+            var selectedCategoryIds = new List<int>();
+            var selectedOptionsIds = new List<int>();
+
+            if (product.Categories != null)
+            {
+                selectedCategoryIds = product.Categories.Select(c => c.CategoryId).ToList(); // from product.Categories select all the categoryIds and put them in a list.
+            }
+
+            if (product.Options != null)
+            {
+                selectedOptionsIds = product.Options.Select(o => o.OptionId).ToList(); // same as above
+            }
+
             ProductViewModel viewModel = new ProductViewModel
             {
                 Product = product,
                 Categories = categories,
                 Options = productOptions,
 
-                SelectedCategoryIds = product.Categories.Select(c => c.CategoryId).ToList(),
-                SelectedOptionsIds = product.Options.Select(o => o.OptionId).ToList()
+                SelectedCategoryIds = selectedCategoryIds,
+                SelectedOptionsIds = selectedOptionsIds
             };
 
             return View(viewModel);
@@ -127,27 +140,27 @@ namespace HetFrietje.Controllers
             }
 
 
-            if (model.SelectedCategoryIds != null)
+            if (model.SelectedCategoryIds != null) // This is almost always true, but just in case.
             {
                 if (existingProduct.Categories == null)
                 {
                     existingProduct.Categories = []; // initialize new list.
                 }
 
-                existingProduct.Categories.Clear();
+                existingProduct.Categories.Clear(); // clear the list (whether it exists or not.
 
-                foreach (var selectedCategoryId in model.SelectedCategoryIds)
+                foreach (var selectedCategoryId in model.SelectedCategoryIds) // go through all selected category ids
                 {
-                    var category = dbContext.Categories.FirstOrDefault(c => c.CategoryId == selectedCategoryId);
+                    var category = dbContext.Categories.FirstOrDefault(c => c.CategoryId == selectedCategoryId); // get the category from the database
 
-                    if (category != null)
+                    if (category != null) // do a check in case the category is not found
                     {
-                        existingProduct.Categories.Add(category);
+                        existingProduct.Categories.Add(category); // add to the existingProduct's Category list in the dbContext so that the State changes to Modified.
                     }
                 }
             }
 
-            if (model.SelectedOptionsIds != null)
+            if (model.SelectedOptionsIds != null) // same as above but then for Options.
             {
                 if (existingProduct.Options == null)
                 {
@@ -168,12 +181,10 @@ namespace HetFrietje.Controllers
             }
             
 
-            dbContext.Entry(existingProduct).CurrentValues.SetValues(model.Product);
+            dbContext.Entry(existingProduct).CurrentValues.SetValues(model.Product); // update scalar values (int, string etc) 
             await dbContext.SaveChangesAsync();
 
             return RedirectToAction(nameof(StockManagement));
-
-
         }
 
         public async Task<IActionResult> Create()
@@ -190,30 +201,79 @@ namespace HetFrietje.Controllers
             {
                 _productId = newestProduct.ProductId + 1; // Incrementeer het productId met 1 voor een nieuwe productId
             }
+
             var emptyProduct = new Product()
             {
                 ProductId = _productId
             };
 
-            Tuple<Product, ICollection<Category>, ICollection<Option>> data = new(emptyProduct, categories, productOptions);
-            return View(data);
+            ProductViewModel viewModel = new ProductViewModel
+            {
+                Product = emptyProduct,
+                Categories = categories,
+                Options = productOptions,
+
+                SelectedCategoryIds = [],
+                SelectedOptionsIds = []
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Name", "Description", "Price", "SalesPrice", "Tax", "Stock", "Options", "Categories", Prefix = "Product")] Product product)
+        public async Task<IActionResult> Create(ProductViewModel model)
         {
-            
-            if (ModelState.IsValid)
-            {
 
-                dbContext.Add(product);
-                await dbContext.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                TempData["MessageType"] = "error";
+                TempData["Message"] = "Failed to create product. ModelState is invalid.";
                 return RedirectToAction(nameof(StockManagement));
             }
 
+            if (model.SelectedCategoryIds != null) // same as in the Edit method.
+            {
+                if (model.Product.Categories == null)
+                {
+                    model.Product.Categories = [];
+                }
 
-            TempData["MessageType"] = "error";
-            TempData["Message"] = "Failed to create product";
+                model.Product.Categories.Clear();
+
+                foreach (var selectedCategoryId in model.SelectedCategoryIds)
+                {
+                    var category = dbContext.Categories.FirstOrDefault(c => c.CategoryId == selectedCategoryId);
+
+                    if (category != null)
+                    {
+                        model.Product.Categories.Add(category);
+                    }
+                }
+            }
+
+            if (model.SelectedOptionsIds != null)  // same as in the Edit method.
+            {
+                if (model.Product.Options == null)
+                {
+                    model.Product.Options = [];
+                }
+
+                model.Product.Options.Clear();
+
+                foreach (var selectedOptionId in model.SelectedOptionsIds)
+                {
+                    var option = dbContext.Options.FirstOrDefault(o => o.OptionId == selectedOptionId);
+
+                    if (option != null)
+                    {
+                        model.Product.Options.Add(option);
+                    }
+                }
+            }
+
+            dbContext.Add(model.Product);
+            await dbContext.SaveChangesAsync();
+
             return RedirectToAction(nameof(StockManagement));
         }
     }

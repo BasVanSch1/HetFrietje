@@ -44,7 +44,7 @@
                     @Html.ListBoxFor(m => m.SelectedCategoryIds,
                         new MultiSelectList(Model.Categories, "CategoryId", "Name", Model.SelectedCategoryIds),
                         new {@class = "form-control"}
-                    );
+                    )
                 </div>
             </div>
 
@@ -54,7 +54,7 @@
                     @Html.ListBoxFor(m => m.SelectedOptionsIds,
                         new MultiSelectList(Model.Options, "OptionId", "Name", Model.SelectedOptionsIds),
                         new { @class = "form-control" }
-                    );
+                    )
                 </div>
             </div>
 
