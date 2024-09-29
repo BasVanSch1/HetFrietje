@@ -76,8 +76,6 @@ namespace HetFrietje.Data
                     })
                 );
 
-            
-
             modelBuilder.Entity<Order>()
                 .Property(o => o.TotalPrice)
                 .HasColumnType("decimal(10,2)");
