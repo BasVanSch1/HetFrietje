@@ -7,7 +7,7 @@
 namespace HetFrietje.Migrations
 {
     /// <inheritdoc />
-    public partial class initialWithDummyData : Migration
+    public partial class initialMetDummyData : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

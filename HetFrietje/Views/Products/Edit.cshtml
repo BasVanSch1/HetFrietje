@@ -1,8 +1,8 @@
-﻿@model Tuple<Product, List<Category>, List<Option>>
+﻿@using System.Collections.Generic
+@model ProductViewModel
 
 @{
     ViewData["Title"] = "Artikel Aanpassen";
-
     var messageType = TempData["MessageType"] as string;
     var message = TempData["Message"] as string;
     var productId = TempData["ProductId"] as int?;
@@ -32,87 +32,57 @@
             </div>
 
             <div class="row col-md-12 mb-1">
-                <label asp-for="@Model.Item1.Stock" class="col-form-label col-md-4">Voorraad</label>
+                <label asp-for="@Model.Product.Stock" class="col-form-label col-md-4">Voorraad</label>
                 <div class="col-md-8">
-                    <input asp-for="@Model.Item1.Stock" class="form-control form-control-sm" type="number" value="@Model.Item1.Stock" />
+                    <input asp-for="@Model.Product.Stock" class="form-control form-control-sm" type="number" value="@Model.Product.Stock" />
                 </div>
             </div>
 
             <div class="row col-md-12 mb-1">
-                <label asp-for="@Model.Item1.Categories" class="col-form-label col-md-4">Categorieën</label>
+                <label class="col-form-label col-md-4">Categorieën</label>
                 <div class="col-md-8">
-                    <select asp-for="@Model.Item1.Categories" class="form-select" id="productCategories" multiple>
-                        @if (Model.Item2.Count == 0)
-                        {
-                            <option value="null">Geen categorieën aangemaakt</option>
-                        } else
-                        {
-                            foreach(var category in Model.Item2)
-                            {
-                                if (Model.Item1.Categories != null && Model.Item1.Categories.Contains(category))
-                                {
-                                    <option value="@category" selected>@category.Name</option>
-                                }
-                                else
-                                {
-                                    <option value="@category">@category.Name</option>
-                                }
-                            }
-                        }
-                    </select>
+                    @Html.ListBoxFor(m => m.SelectedCategoryIds,
+                        new MultiSelectList(Model.Categories, "CategoryId", "Name", Model.SelectedCategoryIds),
+                        new {@class = "form-control"}
+                    );
                 </div>
             </div>
 
             <div class="row col-md-12 mb-1">
-                <label asp-for="@Model.Item1.Options" class="col-form-label col-md-4">Keuze opties</label>
+                <label class="col-form-label col-md-4">Keuze opties</label>
                 <div class="col-md-8">
-                    <select asp-for="@Model.Item1.Options" class="form-select" id="productOptions" multiple>
-                        @if (Model.Item3.Count == 0)
-                        {
-                            <option value="null">Geen opties aangemaakt</option>
-                        } else
-                        {
-                            foreach (var option in Model.Item3)
-                            {
-                                if (Model.Item1.Options != null && Model.Item1.Options.Contains(option))
-                                {
-                                    <option value="@option" selected>@option.Name</option>
-                                } else
-                                {
-                                    <option value="@option">@option.Name</option>
-                                }
-                                
-                            }
-                        }
-                    </select>
+                    @Html.ListBoxFor(m => m.SelectedOptionsIds,
+                        new MultiSelectList(Model.Options, "OptionId", "Name", Model.SelectedOptionsIds),
+                        new { @class = "form-control" }
+                    );
                 </div>
             </div>
 
             <div class="row col-md-12 mb-1">
-                <label asp-for="@Model.Item1.Price" class="col-form-label col-md-4">Prijs</label>
+                <label asp-for="@Model.Product.Price" class="col-form-label col-md-4">Prijs</label>
                 <div class="col-md-8">
-                    <input asp-for="@Model.Item1.Price" class="form-control form-control-sm" type="number" step="0.01" id="productPrice" value="@Model.Item1.Price" />
+                    <input asp-for="@Model.Product.Price" class="form-control form-control-sm" type="number" step="0.01" id="productPrice" value="@Model.Product.Price" />
                 </div>
             </div>
 
             <div class="row col-md-12 mb-1">
-                <label asp-for="@Model.Item1.SalesPrice" class="col-form-label col-md-4">Kortingsprijs</label>
+                <label asp-for="@Model.Product.SalesPrice" class="col-form-label col-md-4">Kortingsprijs</label>
                 <div class="col-md-8">
-                    <input asp-for="@Model.Item1.SalesPrice" class="form-control form-control-sm" type="number" step="0.01" id="productSalesPrice" value="@Model.Item1.SalesPrice" />
+                    <input asp-for="@Model.Product.SalesPrice" class="form-control form-control-sm" type="number" step="0.01" id="productSalesPrice" value="@Model.Product.SalesPrice" />
                 </div>
             </div>
 
             <div class="row col-md-12 mb-1">
-                <label asp-for="@Model.Item1.Tax" class="col-form-label col-md-4">BTW</label>
+                <label asp-for="@Model.Product.Tax" class="col-form-label col-md-4">BTW</label>
                 <div class="col-md-8">
-                    <input asp-for="@Model.Item1.Tax" class="form-control form-control-sm" type="number" step="0.01" id="productTax" value="@Model.Item1.Tax" />
+                    <input asp-for="@Model.Product.Tax" class="form-control form-control-sm" type="number" step="0.01" id="productTax" value="@Model.Product.Tax" />
                 </div>
             </div>
 
             <div class="row col-md-12 mb-1">
-                <label asp-for="@Model.Item1.ProductId" class="col-form-label col-md-4">Artikelnummer</label>
+                <label asp-for="@Model.Product.ProductId" class="col-form-label col-md-4">Artikelnummer</label>
                 <div class="col-md-8">
-                    <input asp-for="@Model.Item1.ProductId" class="form-control form-control-sm" type="number" id="productId" value="@Model.Item1.ProductId" readonly />
+                    <input asp-for="@Model.Product.ProductId" class="form-control form-control-sm" type="number" id="productId" value="@Model.Product.ProductId" readonly />
                 </div>
             </div>
 
@@ -131,15 +101,15 @@
 
         <!-- Rechter kolom -->
         <div class="col-md-7">
-            <textarea asp-for="@Model.Item1.Name" class="form-control" id="productName" rows="1" cols="4">@Model.Item1.Name</textarea>
+            <textarea asp-for="@Model.Product.Name" class="form-control" id="productName" rows="1" cols="4">@Model.Product.Name</textarea>
             <hr/>
 
-            <textarea asp-for="@Model.Item1.Description" class="form-control" id="productDescription" rows="4" cols="4">@Model.Item1.Description</textarea>
+            <textarea asp-for="@Model.Product.Description" class="form-control" id="productDescription" rows="4" cols="4">@Model.Product.Description</textarea>
             <hr/>
 
-            @if (Model.Item1.Options != null && Model.Item1.Options.Count != 0)
+            @if (Model.Product.Options != null && Model.Product.Options.Count != 0)
             {
-                @foreach (var option in @Model.Item1.Options)
+                @foreach (var option in @Model.Product.Options)
                 {
                     <div class="productOptionContainer">
                         <label for="productOption@(option.OptionId)">@option.Name</label>

@@ -9,9 +9,9 @@
         public decimal? SalesPrice { get; set; }
         public decimal Tax { get; set; }
         public int Stock {  get; set; }
-        public List<Option>? Options { get; set; }
-        public List<Order>? Orders { get; set; }
-        public List<Category>? Categories { get; set; }
+        public IList<Option>? Options { get; set; }
+        public IList<Order>? Orders { get; set; }
+        public IList<Category>? Categories { get; set; }
 
 
         public int AddProductOption(Option option)

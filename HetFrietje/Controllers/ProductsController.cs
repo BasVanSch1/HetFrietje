@@ -90,31 +90,90 @@ namespace HetFrietje.Controllers
 
             var categories = await dbContext.Categories.ToListAsync();
             var productOptions = await dbContext.Options.ToListAsync();
-            Tuple<Product, List<Category>, List<Option>> data = new(product, categories, productOptions);
+            ProductViewModel viewModel = new ProductViewModel
+            {
+                Product = product,
+                Categories = categories,
+                Options = productOptions,
 
-            return View(data);
+                SelectedCategoryIds = product.Categories.Select(c => c.CategoryId).ToList(),
+                SelectedOptionsIds = product.Options.Select(o => o.OptionId).ToList()
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int? id, [Bind("ProductId", "Name", "Description", "Price", "SalesPrice", "Tax", "Stock", "Options", "Categories", Prefix = "Item1" )] Product product)
+        public async Task<IActionResult> Edit(ProductViewModel model)
         {
-            if (id == null)
+            if (!ModelState.IsValid)
             {
                 TempData["MessageType"] = "error";
-                TempData["Message"] = "Error: no product ID supplied.";
-                return RedirectToAction(nameof(Edit));
+                TempData["Message"] = "Failed to edit product. ModelState is invalid.";
+                return RedirectToAction(nameof(StockManagement));
             }
 
-            try
+            var existingProduct = await dbContext.Products
+                                .Include(p => p.Categories)
+                                .Include(p => p.Options)
+                                .FirstOrDefaultAsync(p => p.ProductId == model.Product.ProductId); // get product from database instead of memory.
+
+
+            if (existingProduct == null)
             {
-                dbContext.Update(product);
-                await dbContext.SaveChangesAsync();
-            } catch
-            {
-                throw;
+                TempData["MessageType"] = "error";
+                TempData["Message"] = "ERROR: Product does not exist in the database!";
+                return RedirectToAction(nameof(StockManagement));
             }
+
+
+            if (model.SelectedCategoryIds != null)
+            {
+                if (existingProduct.Categories == null)
+                {
+                    existingProduct.Categories = []; // initialize new list.
+                }
+
+                existingProduct.Categories.Clear();
+
+                foreach (var selectedCategoryId in model.SelectedCategoryIds)
+                {
+                    var category = dbContext.Categories.FirstOrDefault(c => c.CategoryId == selectedCategoryId);
+
+                    if (category != null)
+                    {
+                        existingProduct.Categories.Add(category);
+                    }
+                }
+            }
+
+            if (model.SelectedOptionsIds != null)
+            {
+                if (existingProduct.Options == null)
+                {
+                    existingProduct.Options = [];
+                }
+
+                existingProduct.Options.Clear();
+
+                foreach (var selectedOptionId in model.SelectedOptionsIds)
+                {
+                    var option = dbContext.Options.FirstOrDefault(o => o.OptionId == selectedOptionId);
+
+                    if (option != null)
+                    {
+                        existingProduct.Options.Add(option);
+                    }
+                }
+            }
+            
+
+            dbContext.Entry(existingProduct).CurrentValues.SetValues(model.Product);
+            await dbContext.SaveChangesAsync();
 
             return RedirectToAction(nameof(StockManagement));
+
+
         }
 
         public async Task<IActionResult> Create()
@@ -136,12 +195,12 @@ namespace HetFrietje.Controllers
                 ProductId = _productId
             };
 
-            Tuple<Product, List<Category>, List<Option>> data = new(emptyProduct, categories, productOptions);
+            Tuple<Product, ICollection<Category>, ICollection<Option>> data = new(emptyProduct, categories, productOptions);
             return View(data);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Name", "Description", "Price", "SalesPrice", "Tax", "Stock", "Options", "Categories", Prefix = "Item1")] Product product)
+        public async Task<IActionResult> Create([Bind("Name", "Description", "Price", "SalesPrice", "Tax", "Stock", "Options", "Categories", Prefix = "Product")] Product product)
         {
             
             if (ModelState.IsValid)

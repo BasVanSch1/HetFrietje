@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HetFrietje.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240921220735_initialWithDummyData")]
-    partial class initialWithDummyData
+    [Migration("20240927080851_initialMetDummyData")]
+    partial class initialMetDummyData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
