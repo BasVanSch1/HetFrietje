@@ -1,4 +1,83 @@
-﻿@model List<Order>
+﻿@model ICollection<Order>
 
 @{
+    ViewData["Title"] = "Bestellingen";
+    var messageType = TempData["MessageType"] as string;
+    var message = TempData["Message"] as string;
+    var productId = TempData["ProductId"] as int?;
+}
+
+<div class="text-center fw-bold">
+    <h3>Bestellingen</h3>
+</div>
+<div class="border-1 rounded border">
+    <table class="table">
+        <tr>
+            <th>Ordernummerr</th>
+            <th>Artikel Naam</th>
+            <th>Voorraad</th>
+            <th>Beschrijving</th>
+            <th></th>
+        </tr>
+
+        @foreach (Order order in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => order.OrderId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => order.TotalPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => order.SubtotalPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => order.Status)
+                </td>
+                <td class="DetailsOrderBtn">
+                    <a class="btn btn-light btn-custom-editproduct" asp-area="" asp-controller="Orders" asp-action="Details" asp-route-id="@order.OrderId">Bekijk</a>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+
+@if (!String.IsNullOrEmpty(messageType) && !String.IsNullOrEmpty(message))
+{
+    @section scripts {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#messageModal').modal('show');
+            });
+        </script>
+    }
+
+    <div class="modal" tabindex="-1" id="messageModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    @switch (messageType)
+                    {
+                        case "error":
+                            <h5 class="modal-title">ERROR</h5>
+                            break;
+                        case "success":
+                            <h5 class="modal-title">Gelukt</h5>
+                            break;
+                        default:
+                            <h5 class="modal-title">Default Title</h5>
+                            break;
+                    }
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>@message</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 }

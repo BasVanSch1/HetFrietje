@@ -1,0 +1,6 @@
+@HetFrietjeAPI_HostAddress = http://localhost:5010
+
+GET {{HetFrietjeAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
