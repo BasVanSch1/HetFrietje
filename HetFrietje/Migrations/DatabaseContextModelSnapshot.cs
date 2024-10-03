@@ -181,9 +181,6 @@ namespace HetFrietje.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
-                    b.Property<int?>("ProductId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -194,12 +191,9 @@ namespace HetFrietje.Migrations
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("OrderId");
-
-                    b.HasIndex("ProductId");
 
                     b.HasIndex("Username");
 
@@ -209,7 +203,7 @@ namespace HetFrietje.Migrations
                         new
                         {
                             OrderId = 1,
-                            Status = 1,
+                            Status = 2,
                             SubtotalPrice = 123m,
                             TotalPrice = 123m,
                             Username = "Klant"
@@ -300,7 +294,7 @@ namespace HetFrietje.Migrations
                     b.Property<int>("ProductCount")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderId", "ProductId", "ProductCount");
+                    b.HasKey("OrderId", "ProductId");
 
                     b.HasIndex("ProductId");
 
@@ -413,15 +407,9 @@ namespace HetFrietje.Migrations
 
             modelBuilder.Entity("HetFrietje.Models.Order", b =>
                 {
-                    b.HasOne("HetFrietje.Models.Product", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("ProductId");
-
                     b.HasOne("HetFrietje.Models.User", "User")
                         .WithMany("Orders")
-                        .HasForeignKey("Username")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Username");
 
                     b.Navigation("User");
                 });
@@ -435,7 +423,7 @@ namespace HetFrietje.Migrations
                         .IsRequired();
 
                     b.HasOne("HetFrietje.Models.Product", "Product")
-                        .WithMany()
+                        .WithMany("Orders")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

@@ -44,7 +44,15 @@ namespace HetFrietje.Data
                 .HasColumnType("decimal(5,2)"); // 5 cijfers waarvan 2 achter de komma
 
             modelBuilder.Entity<ProductOrder>()
-                .HasKey(po => new { po.OrderId, po.ProductId, po.ProductCount }); // koppeltabel tussen product en order met een productaantal erbij
+                .HasKey(po => new { po.OrderId, po.ProductId }); // koppeltabel tussen product en order met een productaantal erbij
+
+            modelBuilder.Entity<ProductOrder>()
+                .HasOne(po => po.Order)
+                .WithMany(o => o.Products);
+
+            modelBuilder.Entity<ProductOrder>()
+                .HasOne<Product>(po => po.Product)
+                .WithMany(p => p.Orders);
 
             modelBuilder.Entity<Product>()
                 .HasMany<Option>(p => p.Options)

@@ -2,6 +2,10 @@
 
 @{
     ViewData["Title"] = "Bestellen";
+    var messageType = TempData["MessageType"] as string;
+    var message = TempData["Message"] as string;
+    var productId = TempData["ProductId"] as int?;
+    var orderId = ViewContext.HttpContext.Session.GetInt32("OrderId");
 }
 
 <div class="col-md-12 px-0 coverpage center">
@@ -69,7 +73,7 @@
 
                             <!-- Button -->
                             <div class="d-flex justify-content-center mb-0 mt-auto">
-                                <a class="btn btn-warning rounded-3" asp-controller="Orders" asp-action="CustomizeProduct">Toevoegen</a>
+                                <a class="btn btn-warning rounded-3" asp-controller="Products" asp-action="CustomizeProduct" asp-route-id="@product.ProductId">Toevoegen</a>
                             </div>
                             
                         </div>
@@ -79,3 +83,57 @@
         </div>
     </div>
 </div>
+
+@if (!String.IsNullOrEmpty(messageType) && !String.IsNullOrEmpty(message))
+{
+    // Dit zorgt ervoor dat de bootstrap modal standaard wordt getoont indien er een message beschikbaar is.
+    @section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#messageModal').modal('show');
+        });
+    </script>
+    }
+
+    <div class="modal" tabindex="-1" id="messageModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    @switch (messageType)
+                    {
+                        case "error":
+                            <h5 class="modal-title">ERROR</h5>
+                            break;
+                        case "confirmation":
+                            <h5 class="modal-title">Artikel Verwijderen</h5>
+                            break;
+                        case "success":
+                        case "success_addedproduct":
+                            <h5 class="modal-title">Gelukt</h5>
+                            break;
+                        default:
+                            <h5 class="modal-title">Default Title</h5>
+                            break;
+                    }
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>@message</p>
+                </div>
+                <div class="modal-footer">
+                    @if (messageType.Equals("confirmation") && productId != null)
+                    {
+                        <a class="btn btn-warning" asp-area="" asp-controller="Products" asp-action="DeleteProductConfirmed" asp-route-id="@productId">Bevestig</a>
+                    }
+
+                    @if (messageType.Equals("success_addedproduct") && orderId != null)
+                    {
+                        <a class="btn btn-warning" asp-area="" asp-controller="Products" asp-action="ViewShoppingCart" asp-route-id="@orderId">Naar winkelwagen</a>
+                    }
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

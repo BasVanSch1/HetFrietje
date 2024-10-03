@@ -10,7 +10,7 @@
         public decimal Tax { get; set; }
         public int Stock {  get; set; }
         public IList<Option>? Options { get; set; }
-        public IList<Order>? Orders { get; set; }
+        public IList<ProductOrder>? Orders { get; set; }
         public IList<Category>? Categories { get; set; }
 
 

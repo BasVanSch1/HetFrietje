@@ -1,5 +1,6 @@
 ﻿using HetFrietje.Data;
 using HetFrietje.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -55,7 +56,7 @@ namespace HetFrietje.Controllers
             var product = await dbContext.Products.FindAsync(id);
             if (product == null)
             {
-                TempData["MessageType"] = "error";  
+                TempData["MessageType"] = "error";
                 TempData["Messsage"] = "Error: product does not exist";
                 return RedirectToAction(nameof(StockManagement));
             }
@@ -188,7 +189,7 @@ namespace HetFrietje.Controllers
                     }
                 }
             }
-            
+
 
             dbContext.Entry(existingProduct).CurrentValues.SetValues(model.Product); // update scalar values (int, string etc) 
             await dbContext.SaveChangesAsync();
@@ -284,6 +285,115 @@ namespace HetFrietje.Controllers
             await dbContext.SaveChangesAsync();
 
             return RedirectToAction(nameof(StockManagement));
+        }
+
+
+        public async Task<IActionResult> CustomizeProduct(int? id)
+        {
+            if (id == null)
+            {
+                TempData["MessageType"] = "error";
+                TempData["Message"] = "No productid has been provided.";
+
+                return RedirectToAction(nameof(Index), "Home", new { area = "" }); // redirect to ("action", "ControllerName", routevalues (is verplicht) )
+            }
+
+            var product = await dbContext.Products
+                                .Include(p => p.Categories)
+                                .Include(p => p.Options)
+                                .FirstOrDefaultAsync(p => p.ProductId == id);
+
+            if (product == null)
+            {
+                TempData["MessageType"] = "error";
+                TempData["Message"] = "Product not found.";
+
+                return RedirectToAction(nameof(Index), "Home", new { area = "" });
+            }
+
+            var order = await dbContext.Orders
+                            .FirstOrDefaultAsync(o => o.Status == OrderStatus.UNSENT); // voor nu geen username checks omdat dit teveel tijd vereist.
+
+            if (order == null) 
+            {
+                order = new Order();
+            }
+
+            var productOrder = new ProductOrder()
+            {
+                ProductId = product.ProductId,
+                Product = product,
+                Order = order,
+                OrderId = order.OrderId,
+                ProductCount = 0
+            };
+
+            // get categories & options from the databse for the viewmodel
+            var categories = await dbContext.Categories.ToListAsync();
+            var options = await dbContext.Options.ToListAsync();
+
+            var viewModel = new ProductOrderViewModel()
+            {
+                ProductOrder = productOrder,
+                Categories = categories,
+                Options = options
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddProductToOrder(ProductOrderViewModel model)
+        {
+            var existingProductOrder = await dbContext.ProductOrders
+                                            .FirstOrDefaultAsync(po => po.ProductId == model.ProductOrder.ProductId && po.OrderId == model.ProductOrder.OrderId);
+
+            var existingProduct = await dbContext.Products
+                                        .FirstOrDefaultAsync(p => p.ProductId == model.ProductOrder.ProductId); // get product from database so it can be added to the model.
+
+            if (existingProduct == null)
+            {
+                TempData["MessageType"] = "error";
+                TempData["Message"] = "Product not found.";
+
+                return RedirectToAction(nameof(Index), "Home", new { area = "" });
+            }
+
+            var order = await dbContext.Orders
+                                .FirstOrDefaultAsync(o => o.OrderId == model.ProductOrder.OrderId && o.Status == OrderStatus.UNSENT); // extra check to see if the order has the right status. this is not really neccesary.
+
+            if (order == null)
+            {
+                order = new Order();
+            }
+
+            // add references to the right objects to model again, since these were not sent when submitting the form.
+            model.ProductOrder.Product = existingProduct;
+            model.ProductOrder.Order = order;
+
+            if (existingProductOrder != null) // in case the product was already added to the same order before.
+            {
+                // ==add selected productoptions==              (dit is nog niet werkend)
+
+                existingProductOrder.ProductCount += model.ProductOrder.ProductCount;
+                await dbContext.SaveChangesAsync();
+
+                TempData["MessageType"] = "success_addedproduct";
+                TempData["Message"] = $"{model.ProductOrder.ProductCount}x {model.ProductOrder.Product.Name} is toegevoegd aan uw winkelwagen";
+            } else
+            {
+                // ==add selected productoptions==              (dit is nog niet werkend)
+
+                dbContext.Add(model.ProductOrder);
+                await dbContext.SaveChangesAsync();
+
+                TempData["MessageType"] = "success_addedproduct";
+                TempData["Message"] = $"{model.ProductOrder.ProductCount}x {model.ProductOrder.Product.Name} is toegevoegd aan uw winkelwagen";
+            }
+
+            HttpContext.Session.SetInt32("OrderId", model.ProductOrder.OrderId); // zet de session variable.
+            return RedirectToAction(nameof(Index), "Home", new { area = "" });
         }
     }
 }
