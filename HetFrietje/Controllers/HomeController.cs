@@ -22,10 +22,27 @@ namespace HetFrietje.Controllers
                                 .Include(p => p.Categories)    
                                 .ToListAsync();
 
+
+            var orderId = HttpContext.Session.GetInt32("OrderId");
+            int orderProductCount = 0;
+
+            if (orderId != null)
+            {
+                var productOrders = await dbContext.ProductOrders
+                                            .Where(po => po.OrderId == orderId)
+                                            .ToListAsync();
+
+                foreach (var product in productOrders)
+                {
+                    orderProductCount += product.ProductCount;
+                }
+            }
+
             var viewModel = new ProductListViewModel
             {
                 Products = products,
-                Categories = categories
+                Categories = categories,
+                OrderProductCount = orderProductCount 
             };
 
             return View(viewModel);

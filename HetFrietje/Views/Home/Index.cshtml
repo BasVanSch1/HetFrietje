@@ -11,6 +11,14 @@
 <div class="col-md-12 px-0 coverpage center">
     <img class="img-fluid" src="img/frontpage.png" />
 </div>
+
+<div class="d-flex m-0" id="shoppingcart">
+    <img src="~/img/svg/shopping-cart.svg" width="16" height="24" />
+    <p class="m-0 ms-1">@Model.OrderProductCount items in je winkelwagen</p>
+</div>
+
+<hr class="mb-1 mt-1"/>
+
 <div class="col-md-12 d-flex">
     <div class="col-md-1 align-self-start">
         <p class="text-black fw-bold text-decoration-underline m-0">Categorieën</p>
@@ -30,8 +38,7 @@
             
         </ul>
     </div>
-    <div class="col-md-11 d-flex">
-        <div id="shoppingcart"></div>
+    <div class="col-md-11 d-flex flex-column">
         <div id="product-selection" class="col-md-12 d-flex flex-row justify-content-evenly flex-wrap">
             @if (Model.Products != null)
             {
