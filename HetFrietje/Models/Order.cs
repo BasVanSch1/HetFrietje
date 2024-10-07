@@ -33,7 +33,7 @@ namespace HetFrietje.Models
                     total += CalculateTaxOfProduct(productOrder.Product) * productOrder.ProductCount + productOrder.Product.Price * productOrder.ProductCount; // tax * count + price * count
                 }
             }
-            CalculateSubtotalPrice();
+
             TotalPrice = total;
             return total;
         }
