@@ -34,6 +34,7 @@ namespace HetFrietje.Models
                 }
             }
 
+            CalculateSubtotalPrice();
             TotalPrice = total;
             return total;
         }
