@@ -27,7 +27,9 @@ namespace HetFrietjeAPI.Controllers
         [SwaggerOperation(Summary = "List all the categories.")]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
-            return await _context.Categories.ToListAsync();
+            return await _context.Categories
+                            .Include(c => c.Products)
+                            .ToListAsync();
         }
 
         // GET: api/Categories/5
@@ -35,7 +37,9 @@ namespace HetFrietjeAPI.Controllers
         [SwaggerOperation(Summary = "Get a category by its ID.")]
         public async Task<ActionResult<Category>> GetCategory(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _context.Categories
+                                    .Include(c => c.Products)
+                                    .FirstOrDefaultAsync();
 
             if (category == null)
             {
@@ -103,6 +107,31 @@ namespace HetFrietjeAPI.Controllers
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
 
+            return NoContent();
+        }
+
+        [HttpPost("AddProduct/{categoryId}/{productId}")]
+        [SwaggerOperation(Summary = "Add an existing product to a category.")]
+        public async Task<IActionResult> AddProductToCategory(int categoryId, int productId)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            var category = await _context.Categories.FindAsync(categoryId);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            if (category.Products == null) // If there aren't any products in the category yet; create an empty list.
+            {
+                category.Products = [];
+            }
+
+            category.Products.Add(product);
             return NoContent();
         }
 
