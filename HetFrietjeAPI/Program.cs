@@ -1,4 +1,6 @@
 
+using Microsoft.OpenApi.Models;
+
 namespace HetFrietjeAPI
 {
     public class Program
@@ -18,7 +20,11 @@ namespace HetFrietjeAPI
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.EnableAnnotations();
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "HetFrietjeAPIAnnotation", Version = "v1" });
+            });
 
             var app = builder.Build();
 

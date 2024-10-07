@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HetFrietje.Data;
 using HetFrietje.Models;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace HetFrietjeAPI.Controllers
 {
@@ -22,23 +23,19 @@ namespace HetFrietjeAPI.Controllers
         }
 
         // GET: api/Products
-        [HttpGet]
+        [HttpGet(Name = "GetProducts")]
+        [SwaggerOperation(Summary = "List all the products.")]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            return await _context.Products
-                .Include(p => p.Categories)
-                .Include(p => p.Options)
-                .ToListAsync();
+            return await _context.Products.ToListAsync();
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
+        [SwaggerOperation(Summary = "Get a product by ID.")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _context.Products
-                                    .Include(p => p.Categories)
-                                    .Include(p => p.Options)
-                                    .FirstOrDefaultAsync(p => p.ProductId == id);
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == id);
 
             if (product == null)
             {
@@ -51,6 +48,7 @@ namespace HetFrietjeAPI.Controllers
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [SwaggerOperation(Summary = "Edit an existing product.")]
         public async Task<IActionResult> PutProduct(int id, Product product)
         {
             if (id != product.ProductId)
@@ -82,6 +80,7 @@ namespace HetFrietjeAPI.Controllers
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [SwaggerOperation(Summary = "Create a new product.")]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
             _context.Products.Add(product);
@@ -92,6 +91,7 @@ namespace HetFrietjeAPI.Controllers
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
+        [SwaggerOperation(Summary = "Delete a product.")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = await _context.Products.FindAsync(id);
