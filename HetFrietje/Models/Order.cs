@@ -17,7 +17,12 @@ namespace HetFrietje.Models
             return -1;
         }
 
-        private decimal CalculateTotal()
+        /// <summary>
+        /// Calculates the total price based on all the products in the Order and assigns it to the TotalPrice property of the object.
+        /// Also calls CalculateSubtotalPrice()
+        /// </summary>
+        /// <returns>The calculated TotalPrice.</returns>
+        public decimal CalculateTotalPrice()
         {
             decimal total = 0;
 
@@ -29,10 +34,15 @@ namespace HetFrietje.Models
                 }
             }
 
+            TotalPrice = total;
             return total;
         }
 
-        private decimal CalculateSubtotal()
+        /// <summary>
+        /// Calculates the subtotal price based on all the products in this Order and assigns it to the SubtotalPrice property of the object.
+        /// </summary>
+        /// <returns>The calculated SubtotalPrice</returns>
+        private decimal CalculateSubtotalPrice()
         {
             decimal total = 0;
             if (Products != null)
@@ -43,6 +53,7 @@ namespace HetFrietje.Models
                 }
             }
 
+            SubtotalPrice = total;
             return total;
         }
 

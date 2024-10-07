@@ -59,7 +59,6 @@ namespace HetFrietje.Controllers
                 // ==add selected productoptions==              (dit is nog niet werkend)
 
                 existingProductOrder.ProductCount += model.ProductOrder.ProductCount;
-                await dbContext.SaveChangesAsync();
 
                 TempData["MessageType"] = "success_addedproduct";
                 TempData["Message"] = $"{model.ProductOrder.ProductCount}x {model.ProductOrder.Product.Name} is toegevoegd aan uw winkelwagen";
@@ -69,11 +68,13 @@ namespace HetFrietje.Controllers
                 // ==add selected productoptions==              (dit is nog niet werkend)
 
                 dbContext.Add(model.ProductOrder);
-                await dbContext.SaveChangesAsync();
 
                 TempData["MessageType"] = "success_addedproduct";
                 TempData["Message"] = $"{model.ProductOrder.ProductCount}x {model.ProductOrder.Product.Name} is toegevoegd aan uw winkelwagen";
             }
+
+            model.ProductOrder.Order.CalculateTotalPrice();
+            await dbContext.SaveChangesAsync();
 
             HttpContext.Session.SetInt32("OrderId", model.ProductOrder.OrderId); // zet de session variable.
             return RedirectToAction(nameof(Index), "Home", new { area = "" });
