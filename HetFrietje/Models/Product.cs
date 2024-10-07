@@ -1,4 +1,6 @@
-﻿namespace HetFrietje.Models
+﻿using System.Text.Json.Serialization;
+
+namespace HetFrietje.Models
 {
     public class Product
     {
@@ -12,22 +14,5 @@
         public IList<Option>? Options { get; set; }
         public IList<ProductOrder>? Orders { get; set; }
         public IList<Category>? Categories { get; set; }
-
-
-        public int AddProductOption(Option option)
-        {
-            return -1;
-        }
-
-        public int RemoveProductOption(Option option)
-        {
-            return -1;
-        }
-
-        public IList<Product> GetProducts()
-        {
-            List<Product> products = new();
-            return products;
-        }
     }
 }

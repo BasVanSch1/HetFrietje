@@ -1,4 +1,6 @@
-﻿namespace HetFrietje.Models
+﻿using System.Text.Json.Serialization;
+
+namespace HetFrietje.Models
 {
     public class Order
     {

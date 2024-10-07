@@ -12,7 +12,7 @@
 </div>
 
 <div class="border-1 rounded border p-4 d-flex">
-    @using (Html.BeginForm("AddProductToOrder", "Products", new { ProductOrderViewModel = Model}, FormMethod.Post, false, new { @class="d-flex col-md-12"}))
+    @using (Html.BeginForm("AddProductToOrder", "Orders", new { ProductOrderViewModel = Model}, FormMethod.Post, false, new { @class="d-flex col-md-12"}))
     {
         @Html.AntiForgeryToken();
         <!-- Linker kolom -->

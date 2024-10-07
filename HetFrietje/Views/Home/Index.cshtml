@@ -135,7 +135,7 @@
 
                     @if (messageType.Equals("success_addedproduct") && orderId != null)
                     {
-                        <a class="btn btn-warning" asp-area="" asp-controller="Products" asp-action="ViewShoppingCart" asp-route-id="@orderId">Naar winkelwagen</a>
+                        <a class="btn btn-warning" asp-area="" asp-controller="Orders" asp-action="ViewShoppingCart" asp-route-id="@orderId">Naar winkelwagen</a>
                     }
 
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
