@@ -368,7 +368,16 @@ namespace HetFrietje.Controllers
             await dbContext.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
+        }
 
+        public IActionResult ProcesOrders()
+        {
+            return View();
+        }
+
+        public IActionResult FinishedOrders()
+        {
+            return View();
         }
     }
 }

@@ -27,12 +27,12 @@
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" asp-area="" asp-controller="Orders" asp-action="Index">Geplaatst</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Orders">Bereiden</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Orders">Vewerkt</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Orders" asp-action="ProcesOrders">Bereiden</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Orders" asp-action="FinishedOrders">Vewerkt</a>
                             </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AboutUs">Over Ons</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">Over Ons</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="StockManagement">Artikelbeheer</a>
