@@ -56,3 +56,7 @@ body {
 .cartProductImage {
     width: 10% !important;
 }
+
+.orderDetailsProductImage {
+    width: 10% !important;
+}

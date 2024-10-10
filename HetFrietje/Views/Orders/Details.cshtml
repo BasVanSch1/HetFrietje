@@ -4,9 +4,99 @@
     var messageType = TempData["MessageType"] as string;
     var message = TempData["Message"] as string;
     var productId = TempData["ProductId"] as int?;
+
+    var productCount = 0;
 }
 
-TODO
+<div class="col-md-12 d-flex p-4 border-1 border-dark border rounded">
+    <div class="col-md-4 d-flex flex-column">
+        <p><b>Bestellingsinformatie</b></p>
+
+        <div class="col-md-12">
+            <div class="row col-md-12">
+                <label class="col-md-6"><b>Bestellingsnummer</b></label>
+                <label class="col-md-6">@Model.OrderId</label>
+            </div>
+            <div class="row col-md-12">
+                <label class="col-md-6"><b>Bestelling geplaatst</b></label>
+                <label class="col-md-6">@Model.OrderDate</label>
+            </div>
+            <div class="row col-md-12">
+                <label class="col-md-6"><b>Aantal producten</b></label>
+                <label class="col-md-6">
+                    @foreach (var productOrder in Model.Products)
+                    {
+                        productCount += productOrder.ProductCount;
+                    }
+                    @productCount
+                </label>
+            </div>
+            <div class="row col-md-12">
+                <label class="col-md-6"><b>Status</b></label>
+                <label class="col-md-6">@Model.Status.ToString()</label>
+            </div>
+        </div>
+
+        <div class="col-md-12 d-flex justify-content-center mt-2">
+            <a class="btn btn-warning" asp-controller="Orders" asp-action="RepeatOrder" asp-route-orderId="@Model.OrderId">Bestelling opnieuw plaatsen</a>
+        </div>
+    </div>
+
+    <div class="col-md-1"></div>
+
+    <div class="col-md-7 d-flex flex-column">
+        <div class="d-flex">
+            <b>Producten</b>
+        </div>
+        <div class="border-1 rounded border">
+            <table>
+                <tr>
+                    <th></th>
+                    <th>Naam</th>
+                    <th>Aantal</th>
+                    <th>Prijs per stuk</th>
+                    <th>Prijs totaal</th>
+                </tr>
+
+                @foreach (var orderProduct in Model.Products)
+                {
+                    <tr>
+                        <td class="orderDetailsProductImage">
+                            <img class="img-fluid img-thumbnail" src="~/img/products/@(orderProduct.ProductId).png" onerror="this.src='/img/products/default.png';this.onerror=null" />
+                        </td>
+
+                        <td>@orderProduct.Product.Name</td>
+                        <td>@orderProduct.ProductCount</td>
+
+                        <td>
+                            €
+                            @if (orderProduct.Product.SalesPrice != null)
+                            {
+                                @orderProduct.Product.SalesPrice
+                            }
+                            else
+                            {
+                                @orderProduct.Product.Price
+                            }
+                        </td>
+
+                        <td>
+                            €
+                            @if (orderProduct.Product.SalesPrice != null)
+                            {
+                                @(orderProduct.Product.SalesPrice * orderProduct.ProductCount)
+                            }
+                            else
+                            {
+                                @(orderProduct.Product.Price * orderProduct.ProductCount)
+                            }
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
 
 
 
@@ -33,6 +123,9 @@ TODO
                         case "success":
                             <h5 class="modal-title">Gelukt</h5>
                             break;
+                        case "repeatOrderConfirmation":
+                            <h5 class="modal-title">Bevestig</h5>
+                            break;
                         default:
                             <h5 class="modal-title">Default Title</h5>
                             break;
@@ -43,7 +136,16 @@ TODO
                     <p>@message</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    @switch (messageType)
+                    {
+                        case "repeatOrderConfirmation":
+                            <a class="btn btn-warning" asp-controller="Orders" asp-action="RepeatOrderConfirmed" asp-route-orderId="@Model.OrderId">Plaats bestelling</a>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            break;
+                        default:
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            break;
+                    }
                 </div>
             </div>
         </div>

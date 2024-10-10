@@ -34,7 +34,10 @@ namespace HetFrietje.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var order = await dbContext.Orders.Include(o => o.Products).FirstOrDefaultAsync(o => o.OrderId == id);
+            var order = await dbContext.Orders
+                        .Include(o => o.Products)
+                        .ThenInclude(op => op.Product)
+                        .FirstOrDefaultAsync(o => o.OrderId == id);
             if (order == null)
             {
                 TempData["MessageType"] = "error";
@@ -291,63 +294,81 @@ namespace HetFrietje.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddProductToOrder(ProductOrderViewModel model)
+        public async Task<IActionResult> RepeatOrder(int? orderId)
         {
-            var existingProductOrder = await dbContext.ProductOrders
-                                            .FirstOrDefaultAsync(po => po.ProductId == model.ProductOrder.ProductId && po.OrderId == model.ProductOrder.OrderId);
-
-            var existingProduct = await dbContext.Products
-                                        .FirstOrDefaultAsync(p => p.ProductId == model.ProductOrder.ProductId); // get product from database so it can be added to the model.
-
-            if (existingProduct == null)
+            if (orderId == null)
             {
                 TempData["MessageType"] = "error";
-                TempData["Message"] = "Product not found.";
-
-                return RedirectToAction(nameof(Index), "Home", new { area = "" });
+                TempData["Message"] = "Error: orderid not supplied.";
+                return RedirectToAction(nameof(Cart));
             }
 
             var order = await dbContext.Orders
-                                .FirstOrDefaultAsync(o => o.OrderId == model.ProductOrder.OrderId && o.Status == OrderStatus.UNSENT); // includes extra check to see if the order has the right status. this is not really neccesary.
+                            .Include(o => o.Products)
+                            .FirstOrDefaultAsync(o => o.OrderId == orderId);
 
             if (order == null)
             {
-                order = new Order()
-                {
-                    OrderDate = DateTime.Now,
-                };
+                TempData["MessageType"] = "error";
+                TempData["Message"] = "Error: order not found.";
+                return RedirectToAction(nameof(Cart));
             }
 
-            // add references to the right objects to model again, since these were not sent when submitting the form.
-            model.ProductOrder.Product = existingProduct;
-            model.ProductOrder.Order = order;
-
-            if (existingProductOrder != null) // in case the product was already added to the same order before.
+            var totalProductCount = 0;
+            foreach (var product in order.Products)
             {
-                // ==add selected productoptions==              (dit is nog niet werkend)
-
-                existingProductOrder.ProductCount += model.ProductOrder.ProductCount;
-
-                TempData["MessageType"] = "success_addedproduct";
-                TempData["Message"] = $"{model.ProductOrder.ProductCount}x {model.ProductOrder.Product.Name} is toegevoegd aan uw winkelwagen";
+                totalProductCount += product.ProductCount;
             }
-            else
+
+            TempData["MessageType"] = "repeatOrderConfirmation";
+            TempData["Message"] = $"Weet u zeker dat u deze bestelling opnieuw wil plaatsen? Totale prijs: {order.TotalPrice} Aantal producten: {totalProductCount}";
+
+            return RedirectToAction(nameof(Details), new { id = orderId });
+        }
+
+        public async Task<IActionResult> RepeatOrderConfirmed(int? orderId)
+        {
+            if (orderId == null)
             {
-                // ==add selected productoptions==              (dit is nog niet werkend)
-
-                dbContext.Add(model.ProductOrder);
-
-                TempData["MessageType"] = "success_addedproduct";
-                TempData["Message"] = $"{model.ProductOrder.ProductCount}x {model.ProductOrder.Product.Name} is toegevoegd aan uw winkelwagen";
+                TempData["MessageType"] = "error";
+                TempData["Message"] = "Error: orderid not supplied.";
+                return RedirectToAction(nameof(Cart));
             }
 
-            model.ProductOrder.Order.CalculateTotalPrice();
+            var order = await dbContext.Orders
+                            .Include(o => o.Products)
+                            .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+            if (order == null)
+            {
+                TempData["MessageType"] = "error";
+                TempData["Message"] = "Error: order not found.";
+                return RedirectToAction(nameof(Cart));
+            }
+
+            var newOrder = new Order()
+            {
+                Username = order.Username,
+                Status = OrderStatus.PLACED,
+                TotalPrice = order.TotalPrice,
+                SubtotalPrice = order.SubtotalPrice,
+                OrderDate = DateTime.Now
+            };
+
+
+            newOrder.Products = order.Products
+                                    .Select(po => new ProductOrder
+                                    {
+                                        ProductId = po.ProductId,
+                                        Order = newOrder,
+                                        ProductCount = po.ProductCount
+                                    }).ToList();
+                                        
+            dbContext.Orders.Add(newOrder);
             await dbContext.SaveChangesAsync();
 
-            HttpContext.Session.SetInt32("OrderId", model.ProductOrder.OrderId); // zet de session variable.
-            return RedirectToAction(nameof(Index), "Home", new { area = "" });
+            return RedirectToAction(nameof(Index));
+
         }
     }
 }
