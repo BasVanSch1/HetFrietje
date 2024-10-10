@@ -24,6 +24,26 @@ namespace HetFrietje.Controllers
             return View(orders);
         }
 
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                TempData["MessageType"] = "error";
+                TempData["Messsage"] = "Error: no order id supplied.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var order = await dbContext.Orders.Include(o => o.Products).FirstOrDefaultAsync(o => o.OrderId == id);
+            if (order == null)
+            {
+                TempData["MessageType"] = "error";
+                TempData["Messsage"] = "Error: order not found.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(order);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddProductToOrder(ProductOrderViewModel model)
@@ -43,11 +63,14 @@ namespace HetFrietje.Controllers
             }
 
             var order = await dbContext.Orders
-                                .FirstOrDefaultAsync(o => o.OrderId == model.ProductOrder.OrderId && o.Status == OrderStatus.UNSENT); // extra check to see if the order has the right status. this is not really neccesary.
+                                .FirstOrDefaultAsync(o => o.OrderId == model.ProductOrder.OrderId && o.Status == OrderStatus.UNSENT); // includes extra check to see if the order has the right status. this is not really neccesary.
 
             if (order == null)
             {
-                order = new Order();
+                order = new Order()
+                {
+                    OrderDate = DateTime.Now,
+                };
             }
 
             // add references to the right objects to model again, since these were not sent when submitting the form.

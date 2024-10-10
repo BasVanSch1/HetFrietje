@@ -17,7 +17,7 @@ namespace HetFrietje.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -181,6 +181,9 @@ namespace HetFrietje.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -203,6 +206,7 @@ namespace HetFrietje.Migrations
                         new
                         {
                             OrderId = 1,
+                            OrderDate = new DateTime(2024, 10, 10, 13, 42, 57, 682, DateTimeKind.Local).AddTicks(7064),
                             Status = 2,
                             SubtotalPrice = 123m,
                             TotalPrice = 123m,

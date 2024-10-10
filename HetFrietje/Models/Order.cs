@@ -11,11 +11,7 @@ namespace HetFrietje.Models
         public OrderStatus Status { get; set; }
         public decimal TotalPrice { get; set; }
         public decimal SubtotalPrice { get; set; }
-
-        public int PlaceOrder()
-        {
-            return -1;
-        }
+        public DateTime OrderDate { get; set; }
 
         /// <summary>
         /// Calculates the total price based on all the products in the Order and assigns it to the TotalPrice property of the object.

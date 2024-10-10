@@ -243,7 +243,8 @@ namespace HetFrietje.Data
                 Username = "Klant",
                 Status = OrderStatus.CONFIRMED,
                 TotalPrice = 123,
-                SubtotalPrice = 123
+                SubtotalPrice = 123,
+                OrderDate = DateTime.Now,
             };
 
             modelBuilder.Entity<Order>()

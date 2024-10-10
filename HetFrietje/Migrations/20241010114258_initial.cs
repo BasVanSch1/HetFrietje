@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -7,7 +8,7 @@
 namespace HetFrietje.Migrations
 {
     /// <inheritdoc />
-    public partial class initialWithDummyData : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -128,7 +129,8 @@ namespace HetFrietje.Migrations
                     Username = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    SubtotalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
+                    SubtotalPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -235,8 +237,8 @@ namespace HetFrietje.Migrations
 
             migrationBuilder.InsertData(
                 table: "Orders",
-                columns: new[] { "OrderId", "Status", "SubtotalPrice", "TotalPrice", "Username" },
-                values: new object[] { 1, 2, 123m, 123m, "Klant" });
+                columns: new[] { "OrderId", "OrderDate", "Status", "SubtotalPrice", "TotalPrice", "Username" },
+                values: new object[] { 1, new DateTime(2024, 10, 10, 13, 42, 57, 682, DateTimeKind.Local).AddTicks(7064), 2, 123m, 123m, "Klant" });
 
             migrationBuilder.InsertData(
                 table: "ProductOrders",

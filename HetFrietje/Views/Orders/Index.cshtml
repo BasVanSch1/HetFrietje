@@ -13,30 +13,30 @@
 <div class="border-1 rounded border">
     <table class="table">
         <tr>
-            <th>Ordernummerr</th>
-            <th>Artikel Naam</th>
-            <th>Voorraad</th>
-            <th>Beschrijving</th>
-            <th></th>
+            <th>Datum</th>
+            <th>Aantal producten</th>
+            <th>Prijs</th>
+            <th>Ordernummer</th>
+            <th>Status</th>
         </tr>
 
         @foreach (Order order in Model)
         {
+
+            var productCount = 0;
+            foreach (var product in order.Products)
+            {
+                productCount += product.ProductCount;
+            }
+
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => order.OrderId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => order.TotalPrice)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => order.SubtotalPrice)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => order.Status)
-                </td>
+                <td>@order.OrderDate</td>
+                <td>@productCount</td>
+                <td>@order.TotalPrice</td>
+                <td>@order.OrderId</td>
+                <td>@order.Status.ToString()</td>
                 <td class="DetailsOrderBtn">
-                    <a class="btn btn-light btn-custom-editproduct" asp-area="" asp-controller="Orders" asp-action="Details" asp-route-id="@order.OrderId">Bekijk</a>
+                    <a class="btn btn-warning btn-custom-editproduct" asp-area="" asp-controller="Orders" asp-action="Details" asp-route-id="@order.OrderId">Bekijk</a>
                 </td>
             </tr>
         }
