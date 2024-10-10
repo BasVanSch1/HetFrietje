@@ -252,6 +252,45 @@ namespace HetFrietje.Controllers
             return RedirectToAction(nameof(Cart));
         }
 
+        public async Task<IActionResult> CancelOrder()
+        {
+            var orderId = HttpContext.Session.GetInt32("OrderId");
+            if (orderId == null)
+            {
+                TempData["MessageType"] = "error";
+                TempData["Message"] = "Error: session not found.";
+                return RedirectToAction(nameof(Cart));
+            }
+
+            TempData["MessageType"] = "cancelOrderConfirmation";
+            TempData["Message"] = "Weet u zeker dat u deze bestelling wilt annuleren?";
+            return RedirectToAction(nameof(Cart));
+        }
+
+        public async Task<IActionResult> CancelOrderConfirmed()
+        {
+            var orderId = HttpContext.Session.GetInt32("OrderId");
+            if (orderId == null)
+            {
+                TempData["MessageType"] = "error";
+                TempData["Message"] = "Error: session not found.";
+                return RedirectToAction(nameof(Cart));
+            }
+
+            var order = await dbContext.Orders.FindAsync(orderId);
+            if (order == null)
+            {
+                TempData["MessageType"] = "error";
+                TempData["Message"] = "Error: order not found.";
+                return RedirectToAction(nameof(Cart));
+            }
+
+            dbContext.Orders.Remove(order);
+            await dbContext.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Home");
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddProductToOrder(ProductOrderViewModel model)

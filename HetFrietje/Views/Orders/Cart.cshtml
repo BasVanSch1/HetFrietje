@@ -43,12 +43,12 @@
                         @if (@orderProduct.Product.SalesPrice != null)
                         {
                             <div class="d-flex flex-column">
-                                <p class="salesNormalPrice">@orderProduct.Product.Price</p>
-                                <p>@orderProduct.Product.SalesPrice</p>
+                                <p class="salesNormalPrice">€@orderProduct.Product.Price</p>
+                                <p>€@orderProduct.Product.SalesPrice</p>
                             </div>
                         } else
                         {
-                            @orderProduct.Product.Price
+                            <p>€@orderProduct.Product.Price</p>
                         }
                     </td>
 
@@ -62,6 +62,7 @@
                     </td>
 
                     <td>
+                        €
                         @if (orderProduct.Product.SalesPrice != null)
                         {
                             @(orderProduct.Product.SalesPrice * orderProduct.ProductCount)
@@ -79,12 +80,12 @@
         <div class="d-flex align-content-center">
             <div class="d-flex justify-content-evenly col-md-8">
                 <div>
-                    <p>Subtotaal</p>
-                    <p> @Model.SubtotalPrice</p>
+                    <p><b>Subtotaal</b></p>
+                    <p>€@Model.SubtotalPrice</p>
                 </div>
                 <div>
-                    <p>Totaal</p>
-                    <p>@Model.TotalPrice</p>
+                    <p><b>Totaal</b></p>
+                    <p>€@Model.TotalPrice</p>
                 </div>
             </div>
             <div class="col-md-4">
@@ -119,6 +120,7 @@
                             <h5 class="modal-title">Gelukt</h5>
                             break;
                         case "confirmation":
+                        case "cancelOrderConfirmation":
                             <h5 class="modal-title">Bevestig</h5>
                             break;
                         default:
@@ -140,6 +142,10 @@
                             break;
                         case "success":
                             <a class="btn btn-warning" asp-controller="Orders" asp-action="Index">Naar bestellingen</a>
+                            break;
+                        case "cancelOrderConfirmation":
+                            <a class="btn btn-danger" asp-controller="Orders" asp-action="CancelOrderConfirmed">Annuleer bestelling</a>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Terug</button>
                             break;
                         default:
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
