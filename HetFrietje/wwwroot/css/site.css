@@ -52,3 +52,7 @@ body {
     color: #ff0000;
     text-decoration: line-through;
 }
+
+.cartProductImage {
+    width: 10% !important;
+}

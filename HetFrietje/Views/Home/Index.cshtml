@@ -14,7 +14,7 @@
 
 <div class="d-flex m-0" id="shoppingcart">
     <img src="~/img/svg/shopping-cart.svg" width="16" height="24" />
-    <p class="m-0 ms-1">@Model.OrderProductCount items in je winkelwagen</p>
+    <a class="m-0 ms-1" asp-controller="Orders" asp-action="Cart">@Model.OrderProductCount items in je winkelwagen</a>
 </div>
 
 <hr class="mb-1 mt-1"/>
@@ -135,7 +135,7 @@
 
                     @if (messageType.Equals("success_addedproduct") && orderId != null)
                     {
-                        <a class="btn btn-warning" asp-area="" asp-controller="Orders" asp-action="ViewShoppingCart" asp-route-id="@orderId">Naar winkelwagen</a>
+                        <a class="btn btn-warning" asp-area="" asp-controller="Orders" asp-action="Cart">Naar winkelwagen</a>
                     }
 
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
