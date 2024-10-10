@@ -27,9 +27,7 @@ namespace HetFrietjeAPI.Controllers
         [SwaggerOperation(Summary = "List all the categories.")]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
-            return await _context.Categories
-                            .Include(c => c.Products)
-                            .ToListAsync();
+            return await _context.Categories.ToListAsync();
         }
 
         // GET: api/Categories/5
@@ -39,7 +37,7 @@ namespace HetFrietjeAPI.Controllers
         {
             var category = await _context.Categories
                                     .Include(c => c.Products)
-                                    .FirstOrDefaultAsync();
+                                    .FirstOrDefaultAsync(c => c.CategoryId == id);
 
             if (category == null)
             {
