@@ -287,7 +287,6 @@ namespace HetFrietje.Controllers
             return RedirectToAction(nameof(StockManagement));
         }
 
-
         public async Task<IActionResult> CustomizeProduct(int? id)
         {
             if (id == null)

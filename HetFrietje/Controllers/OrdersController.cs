@@ -49,6 +49,7 @@ namespace HetFrietje.Controllers
         }
 
 
+
         public async Task<IActionResult> Cart()
         {
             var orderId = HttpContext.Session.GetInt32("OrderId");
